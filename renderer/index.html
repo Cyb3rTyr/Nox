@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nox Electron Demo</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #000000;
+            color: #c5e2df;
+        }
+
+        #container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: 270px;
+            background: #0a0a0a;
+            box-sizing: border-box;
+            border-right: 2px solid #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: width 0.2s;
+            padding: 0;
+        }
+
+        #sidebar.collapsed {
+            width: 70px;
+        }
+
+        /* Toggle button at very top */
+        #toggleSidebar {
+            background: none;
+            border: none;
+            color: #c5e2df;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+            align-self: flex-end;
+        }
+
+        #sidebar.collapsed #toggleSidebar {
+            transform: rotate(180deg);
+        }
+
+        /* Logo */
+        #sidebar-logo {
+            margin: 0;
+            padding: 0;
+        }
+
+        #sidebar-logo img {
+            height: 220px;
+            transition: height 0.2s, filter 0.3s;
+            filter: drop-shadow(0 0 10px #BC13FE);
+            display: block;
+        }
+
+        #sidebar.collapsed #sidebar-logo img {
+            height: 60px;
+            filter: drop-shadow(0 0 4px #BC13FE);
+        }
+
+        /* Nav Buttons - no space above */
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            background: transparent;
+            color: #c5e2df;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .nav-btn:hover {
+            background: #5e35b1;
+        }
+
+        .nav-btn.selected {
+            background: #BC13FE;
+            color: #ffffff;
+        }
+
+        .nav-btn .icon {
+            width: 32px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .nav-btn .label {
+            margin-left: 12px;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+
+        #sidebar.collapsed .nav-btn .label {
+            opacity: 0;
+            width: 0;
+            margin: 0;
+        }
+
+        /* Content */
+        #content {
+            flex: 1;
+            padding: 20px 30px;
+            overflow: auto;
+            background: #000000;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        #content h1 {
+            font-size: 32px;
+            margin-bottom: 0.5em;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        #progress {
+            width: 100%;
+            background: #222222;
+            border-radius: 12px;
+            margin-top: 20px;
+            height: 24px;
+            overflow: hidden;
+        }
+
+        #bar {
+            width: 0;
+            height: 100%;
+            background: #BC13FE;
+            transition: width 0.3s ease;
+        }
+
+        #health-log {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background: #111111;
+            padding: 10px;
+            border-radius: 8px;
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        button.action {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #BC13FE;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button.action:hover {
+            background: #261a3a;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="sidebar">
+            <!-- Toggle First -->
+            <button id="toggleSidebar">«</button>
+
+            <!-- Logo Immediately After -->
+            <div id="sidebar-logo">
+                <img src="name_brand.png" alt="Nox Logo">
+            </div>
+
+            <!-- Nav Buttons Right Below Logo -->
+            <button class="nav-btn selected" data-page="home">
+                <span class="icon">🏠</span><span class="label">Home</span>
+            </button>
+            <button class="nav-btn" data-page="malware-protection">
+                <span class="icon">🦠</span><span class="label">Malware Protection</span>
+            </button>
+            <button class="nav-btn" data-page="system-cleanup">
+                <span class="icon">🧹</span><span class="label">System Cleanup</span>
+            </button>
+            <button class="nav-btn" data-page="malware-scan">
+                <span class="icon">🦠</span><span class="label">Malware Scan</span>
+            </button>
+            <button class="nav-btn" data-page="file-encryption">
+                <span class="icon">🔒</span><span class="label">File Encryption</span>
+            </button>
+            <button class="nav-btn" data-page="privacy-settings">
+                <span class="icon">🕵️‍♂️</span><span class="label">Privacy Settings</span>
+            </button>
+            <button class="nav-btn" data-page="system-health">
+                <span class="icon">⚙️</span><span class="label">System Health</span>
+            </button>
+        </div>
+
+        <div id="content">
+            <div id="home" class="page active">
+                <h1>Welcome to Nox</h1>
+                <p>Your all-in-one security toolkit to protect, optimize, and recover your system.</p>
+            </div>
+            <div id="malware-protection" class="page">
+                <h1>🦠 Malware Protection</h1>
+                <p>Detect and remove malware in real-time to keep your system safe.</p>
+            </div>
+            <div id="system-cleanup" class="page">
+                <h1>🧹 System Cleanup</h1>
+                <p>Free up disk space and improve performance by cleaning junk files.</p>
+            </div>
+            <div id="malware-scan" class="page">
+                <h1>🦠 Malware Scan</h1>
+                <button id="startScan" class="action">Start Scan</button>
+                <div id="progress">
+                    <div id="bar"></div>
+                </div>
+            </div>
+            <div id="file-encryption" class="page">
+                <h1>🔒 File Encryption</h1>
+                <p>Protect your sensitive data by encrypting files with strong algorithms.</p>
+            </div>
+            <div id="privacy-settings" class="page">
+                <h1>🕵️‍♂️ Privacy Settings</h1>
+                <p>Manage browser history, cookies, and tracking permissions to enhance your privacy.</p>
+            </div>
+            <div id="system-health" class="page">
+                <h1>⚙️ System Health</h1>
+                <button id="updateBtn" class="action">Update</button>
+                <button id="upgradeBtn" class="action">Upgrade</button>
+                <div id="health-log"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+
+</html>
