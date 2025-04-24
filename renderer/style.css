@@ -252,3 +252,53 @@ button:disabled {
 .nav-btn:hover .icon-img {
     filter: brightness(0) saturate(100%);
 }
+
+.daily-activity {
+    margin-top: 40px;
+    background: #111;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(188, 19, 254, 0.15);
+}
+
+.daily-activity h2 {
+    color: #BC13FE;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.filter-bar {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.filter-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #222;
+    color: #c5e2df;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.filter-btn:hover {
+    background: #333;
+}
+
+.filter-btn.selected {
+    background: #BC13FE;
+    color: #ffffff;
+}
+
+.chart-wrapper {
+    min-height: 250px;
+    /* Set minimum height here */
+    position: relative;
+}
+
+#activityChart {
+    width: 100% !important;
+    height: 100% !important;
+}
