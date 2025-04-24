@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Nox Electron Demo</title>
+    <title>Nox</title>
     <style>
         body {
             margin: 0;
@@ -57,7 +57,7 @@
         }
 
         #sidebar-logo img {
-            height: 220px;
+            height: 90px;
             transition: height 0.2s, filter 0.3s;
             filter: drop-shadow(0 0 10px #BC13FE);
             display: block;
@@ -186,11 +186,11 @@
 
             <!-- Logo Immediately After -->
             <div id="sidebar-logo">
-                <img src="name_brand.png" alt="Nox Logo">
+                <img src="nox_newlogo.png" alt="Nox Logo">
             </div>
 
             <!-- Nav Buttons Right Below Logo -->
-            <button class="nav-btn selected" data-page="home">
+            <button class="nav-btn" data-page="home">
                 <span class="icon">🏠</span><span class="label">Home</span>
             </button>
             <button class="nav-btn" data-page="malware-protection">
@@ -241,10 +241,12 @@
                 <h1>🕵️‍♂️ Privacy Settings</h1>
                 <p>Manage browser history, cookies, and tracking permissions to enhance your privacy.</p>
             </div>
+            <!-- System Health -->
             <div id="system-health" class="page">
                 <h1>⚙️ System Health</h1>
                 <button id="updateBtn" class="action">Update</button>
                 <button id="upgradeBtn" class="action">Upgrade</button>
+                <button id="wingtUpdateBtn" class="action">wingt Update</button>
                 <div id="health-log"></div>
             </div>
         </div>

@@ -40,3 +40,22 @@ document.getElementById('upgradeBtn').addEventListener('click', () => {
     log.textContent = 'Running upgrade...\n';
     setTimeout(() => log.textContent += '✅ Upgrade completed successfully!', 2000);
 });
+
+
+// Add this inside your renderer.js file
+document.getElementById('wingtUpdateBtn').addEventListener('click', () => {
+    const log = document.getElementById('health-log');
+    log.textContent = 'Executing: wingt update...\n';
+    setTimeout(() => {
+        log.textContent += '🔄 Checking for updates...\n';
+        setTimeout(() => {
+            log.textContent += '⬇️ Downloading updates...\n';
+            setTimeout(() => {
+                log.textContent += '📦 Installing updates...\n';
+                setTimeout(() => {
+                    log.textContent += '✅ "wingt update" completed successfully!\n';
+                }, 1500);
+            }, 1500);
+        }, 1500);
+    }, 1000);
+});
