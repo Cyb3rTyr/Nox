@@ -1,8 +1,13 @@
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Inter', sans-serif;
     background: #000000;
     color: #c5e2df;
+}
+
+.nav-btn .label,
+#content h1 {
+    font-family: 'Orbitron', sans-serif;
 }
 
 #container {
@@ -13,7 +18,7 @@ body {
 /* Sidebar */
 #sidebar {
     width: 270px;
-    background: #0a0a0a;
+    background: #111111;
     box-sizing: border-box;
     border-right: 2px solid #0a0a0a;
     display: flex;
@@ -21,13 +26,24 @@ body {
     align-items: center;
     transition: width 0.2s;
     padding: 0;
+    position: relative;
 }
+
+#sidebar-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex: 1;
+    width: 100%;
+    margin-top: 100px;
+}
+
 
 #sidebar.collapsed {
     width: 70px;
 }
 
-/* Toggle button at very top */
 #toggleSidebar {
     background: none;
     border: none;
@@ -52,13 +68,14 @@ body {
 #sidebar-logo img {
     height: 90px;
     transition: height 0.2s, filter 0.3s;
-    filter: drop-shadow(0 0 10px #BC13FE);
+    filter: drop-shadow(0 0 1px #a66eff);
     display: block;
 }
 
 #sidebar.collapsed #sidebar-logo img {
+    content: url("nox_logo_collapsed.png");
     height: 60px;
-    filter: drop-shadow(0 0 4px #BC13FE);
+    filter: drop-shadow(0 0 0px #a66eff);
 }
 
 /* Nav Buttons - no space above */
@@ -79,11 +96,11 @@ body {
 }
 
 .nav-btn:hover {
-    background: #5e35b1;
+    background: #952dfe79;
 }
 
 .nav-btn.selected {
-    background: #BC13FE;
+    background: #5e35b1;
     color: #ffffff;
 }
 
@@ -91,6 +108,11 @@ body {
     width: 32px;
     font-size: 24px;
     text-align: center;
+    transition: color 0.2s ease;
+}
+
+.nav-btn:hover .icon i {
+    color: #000000;
 }
 
 .nav-btn .label {
@@ -200,4 +222,33 @@ button.action:hover {
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+#sidebar.collapsed .label {
+    display: none;
+}
+
+#sidebar.collapsed .nav-btn {
+    justify-content: center;
+    padding: 12px 10px;
+}
+
+.nav-btn .label {
+    transition: opacity 0.2s, width 0.2s;
+}
+
+#sidebar {
+    transition: width 0.2s ease, background-color 0.3s ease;
+}
+
+.icon-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 0px #a66eff);
+    transition: filter 0.2s ease, brightness 0.2s ease;
+}
+
+.nav-btn:hover .icon-img {
+    filter: brightness(0) saturate(100%);
 }
