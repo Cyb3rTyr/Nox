@@ -25,6 +25,7 @@ body {
     flex-direction: column;
     align-items: center;
     transition: width 0.2s;
+    height: 100%;
     padding: 0;
     position: relative;
 }
@@ -301,4 +302,40 @@ button:disabled {
 #activityChart {
     width: 100% !important;
     height: 100% !important;
+}
+
+/* container to lay icons out in a row */
+/* Default (expanded sidebar): vertical, left-aligned */
+#sidebar.collapsed .social-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: flex-start;
+    gap: 0.75em;
+    margin-top: auto;
+    padding: 1em 0 1em 1em;
+}
+
+/* Collapsed sidebar: horizontal, centered */
+.social-links {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5em 0;
+    width: 100%;
+    margin-top: auto;
+}
+
+
+
+
+/* icon sizing & hover effect */
+.social-links img {
+    width: 32px;
+    height: auto;
+    transition: filter 0.2s;
+}
+
+.social-links img:hover {
+    filter: brightness(1.2);
 }

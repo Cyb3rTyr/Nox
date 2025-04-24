@@ -22,3 +22,5 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         }
     });
 });
+
+
