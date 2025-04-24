@@ -138,12 +138,12 @@ body {
 }
 
 #health-log {
-    margin-top: 20px;
+    margin-top: 100px;
     white-space: pre-wrap;
     background: #111111;
     padding: 10px;
     border-radius: 8px;
-    height: 200px;
+    flex: 1;
     overflow-y: auto;
 }
 

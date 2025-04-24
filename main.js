@@ -1,35 +1,45 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const { spawn } = require('child_process');
 const path = require('path');
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 1300,           // Default window size
-        height: 800,
-        minWidth: 1300,         // 👈 Minimum width
-        minHeight: 800,        // 👈 Minimum height
+        width: 1100,
+        height: 700,
+        minWidth: 1100,
+        minHeight: 700,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'), // if using preload
-            nodeIntegration: true,
-            contextIsolation: false
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: false,
+            contextIsolation: true
         }
     });
 
-    win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
-
-    // Optional: Open DevTools on launch
-    // win.webContents.openDevTools();
+    win.loadFile('renderer/index.html');
 }
 
-// Ready to launch
-app.whenReady().then(() => {
-    createWindow();
+// Listen for the update command from renderer
+ipcMain.handle('run-update-command', async () => {
+    return new Promise((resolve, reject) => {
+        const child = spawn('winget', ['update']);
+        let output = '';
 
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow();
+        child.stdout.on('data', data => {
+            output += data.toString();
+        });
+
+        child.stderr.on('data', data => {
+            output += data.toString();
+        });
+
+        child.on('close', code => {
+            resolve(output || `Process exited with code ${code}`);
+        });
+
+        child.on('error', err => {
+            reject(`Failed to run: ${err}`);
+        });
     });
 });
 
-// Quit when all windows are closed (except on macOS)
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
-});
+app.whenReady().then(createWindow);
