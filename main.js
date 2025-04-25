@@ -15,7 +15,7 @@ function createWindow() {
         }
     });
 
-    win.loadFile('renderer/index.html');
+    win.loadFile('index.html');
 }
 
 // Listen for the update command from renderer

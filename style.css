@@ -74,7 +74,7 @@ body {
 }
 
 #sidebar.collapsed #sidebar-logo img {
-    content: url("nox_logo_collapsed.png");
+    content: url("icons/nox_logo_collapsed.png");
     height: 60px;
     filter: drop-shadow(0 0 0px #a66eff);
 }
@@ -338,4 +338,16 @@ button:disabled {
 
 .social-links img:hover {
     filter: brightness(1.2);
+}
+
+/* new parts for the vault  */
+
+.vault-file-entry {
+    background: #111;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

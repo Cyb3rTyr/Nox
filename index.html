@@ -16,7 +16,7 @@
 
             <!-- Logo Immediately After -->
             <div id="sidebar-logo">
-                <img src="nox_newlogo.png" alt="Nox Logo">
+                <img src="icons/nox_newlogo.png" alt="Nox Logo">
             </div>
 
             <div id="sidebar-buttons">
@@ -54,6 +54,11 @@
                     </span>
                     <span class="label">File Encryption</span>
                 </button>
+
+                <button class="nav-btn" data-page="vault">
+                    <span class="icon">🗄️</span><span class="label">Vault</span>
+                </button>
+
 
                 <button class="nav-btn" data-page="privacy-settings">
                     <span class="icon">
@@ -120,10 +125,14 @@
                     <div id="bar"></div>
                 </div>
             </div>
-            <div id="file-encryption" class="page">
-                <h1>🔒 File Encryption</h1>
-                <p>Protect your sensitive data by encrypting files with strong algorithms.</p>
+
+            <div id="vault" class="page">
+                <!-- This is where vault.js will inject content -->
+                <div id="vault-container"></div>
             </div>
+
+
+
             <div id="privacy-settings" class="page">
                 <h1>🕵️‍♂️ Privacy Settings</h1>
                 <p>Manage browser history, cookies, and tracking permissions to enhance your privacy.</p>

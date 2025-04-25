@@ -1,0 +1,23 @@
+vaultData = {
+    files: [
+        {
+            name: "Demo_File.txt",
+            path: "/vault/files/Demo_File.txt",
+            folder: "root"
+        }
+    ],
+    folders: [
+        {
+            id: "root",
+            name: "Vault Root"
+        }
+    ],
+    passwords: [
+        {
+            site: "example.com",
+            username: "demo_user",
+            password: "demo_password_encrypted"
+        }
+    ]
+};
+await saveVault();
