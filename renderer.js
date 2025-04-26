@@ -56,6 +56,7 @@ function initHomeDashboard() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
                 y: { beginAtZero: true, ticks: { color: '#c5e2df' }, grid: { color: '#222' } },
@@ -82,6 +83,7 @@ function initHomeDashboard() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
                 y: { beginAtZero: true, ticks: { color: '#c5e2df' }, grid: { color: '#222' } },
@@ -103,6 +105,7 @@ function initHomeDashboard() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             cutout: '75%',
             plugins: { legend: { display: false } }
         }
@@ -121,6 +124,7 @@ function initHomeDashboard() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
                 y: { beginAtZero: true, ticks: { color: '#c5e2df' }, grid: { color: '#222' } },
@@ -142,6 +146,7 @@ function initHomeDashboard() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             cutout: '75%',
             plugins: { legend: { display: false } }
         }

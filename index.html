@@ -86,35 +86,54 @@
                 <h1>Welcome to Nox</h1>
                 <p>Your digital guardian—securing, optimizing, and anonymizing your system with precision.</p>
                 <div class="dashboard-container">
+                    <!-- LEFT COLUMN -->
                     <div class="left-col">
-                        <div class="card">
+                        <!-- Top-left: Threats Blocked -->
+                        <div class="threat-card">
                             <h2>Threats Blocked</h2>
-                            <div class="chart-container"><canvas id="threatsChart"></canvas></div>
+                            <div class="chart-container">
+                                <canvas id="threatsChart"></canvas>
+                            </div>
                         </div>
-                        <div class="card">
-                            <h2>System Health</h2>
-                            <div class="chart-container"><canvas id="healthChart"></canvas></div>
+                        <!-- Bottom-left: System Health & Updates -->
+                        <div class="bottom-row">
+                            <div class="health-card">
+                                <h2>System Health</h2>
+                                <div class="chart-container">
+                                    <canvas id="healthChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="privacy-card">
+                                <h2>Privacy Trackers</h2>
+                                <div class="chart-container">
+                                    <canvas id="privacyChart"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- RIGHT COLUMN -->
                     <div class="right-col">
-                        <div class="card">
+                        <!-- Top-right: Files Encrypted -->
+                        <div class="files-card">
                             <h2>Files Encrypted</h2>
-                            <div class="chart-container"><canvas id="filesChart"></canvas></div>
+                            <div class="chart-container">
+                                <canvas id="filesChart"></canvas>
+                            </div>
                         </div>
+                        <!-- Bottom-right: Privacy Trackers -->
                         <div class="bottom-row">
-                            <div class="card">
+                            <div class="updates-card">
                                 <h2>Updates Installed</h2>
-                                <div class="chart-container"><canvas id="updatesChart"></canvas></div>
+                                <div class="chart-container">
+                                    <canvas id="updatesChart"></canvas>
+                                </div>
                             </div>
-                            <div class="card">
-                                <h2>Privacy Trackers Removed</h2>
-                                <div class="chart-container"><canvas id="privacyChart"></canvas></div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-
 
             <div id="malware-protection" class="page">
                 <h1>Malware Defense</h1>
