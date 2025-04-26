@@ -18,9 +18,6 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         if (page === 'system-health') {
             const module = await import('./pages/update.js');
             if (module.init) module.init();
-        } else if (page === 'file-encryption') {
-            const module = await import('./pages/encryption.js');
-            if (module.init) module.init();
         }
     });
 });

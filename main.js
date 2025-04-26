@@ -23,9 +23,6 @@ function createWindow() {
 
 // App initialization
 app.whenReady().then(() => {
-    if (!fs.existsSync(vaultPath)) {
-        fs.mkdirSync(vaultPath);
-    }
     createWindow();
 });
 
