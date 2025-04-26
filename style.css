@@ -263,9 +263,16 @@ button:disabled {
 }
 
 .social-links img {
-    width: 32px;
-    height: auto;
+    width: 35px;
+    height: 32px;
+    /* Ensure width and height are equal for a perfect circle */
     transition: filter 0.2s;
+    margin-left: 20px;
+    /* Keeps the 5px right adjustment */
+    margin-bottom: 10px;
+    /* Moves the icon 5px away from the bottom */
+    border-radius: 50%;
+    /* Makes the icon perfectly round */
 }
 
 .social-links img:hover {
