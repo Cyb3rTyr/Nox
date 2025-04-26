@@ -349,3 +349,30 @@ social-links img:hover {
     font-size: clamp(12px, 1.5vw, 14px);
     /* Maximum size reduced to 14px */
 }
+
+/* Modern scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    /* Width of the scrollbar */
+    height: 8px;
+    /* Height of the scrollbar (for horizontal scrollbars) */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555;
+    /* Dark grey color for the scrollbar thumb */
+    border-radius: 4px;
+    /* Rounded edges for the scrollbar thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #777;
+    /* Slightly lighter grey on hover */
+}
+
+::-webkit-scrollbar-track {
+    background: #222;
+    /* Darker grey for the scrollbar track */
+    border-radius: 4px;
+    /* Rounded edges for the scrollbar track */
+}
