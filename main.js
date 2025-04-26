@@ -5,25 +5,44 @@ const fs = require('fs');
 
 const vaultPath = path.join(__dirname, 'vault'); // Vault folder path
 
+let mainWindow;
+
 function createWindow() {
-    const win = new BrowserWindow({
-        width: 1100,
-        height: 900,
-        minWidth: 700,
-        minHeight: 900,
+    mainWindow = new BrowserWindow({
+        width: 800, // Default width
+        height: 600, // Default height
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: false,
-            contextIsolation: true
-        }
+            nodeIntegration: true, // Enable Node.js integration
+            contextIsolation: false, // Disable context isolation for compatibility
+        },
     });
 
-    win.loadFile('index.html');
+    // Maximize the window
+    mainWindow.maximize();
+
+    // Load your index.html file
+    mainWindow.loadFile('index.html');
+
+    // Optional: Remove the default menu bar
+    mainWindow.setMenuBarVisibility(false);
 }
 
 // App initialization
 app.whenReady().then(() => {
     createWindow();
+});
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
 });
 
 // Winget update command

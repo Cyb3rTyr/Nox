@@ -28,6 +28,8 @@ body {
     height: 100%;
     padding: 0;
     position: relative;
+    overflow-y: auto;
+    /* Add this line for scrollbar */
 }
 
 #sidebar-buttons {
@@ -275,7 +277,7 @@ button:disabled {
     /* Makes the icon perfectly round */
 }
 
-.social-links img:hover {
+social-links img:hover {
     filter: brightness(1.2);
 }
 
@@ -333,4 +335,17 @@ button:disabled {
 
 .dropzone.dragover {
     background: #5e35b1;
+}
+
+/* Sidebar icons and labels */
+#sidebar .icon-img {
+    width: clamp(24px, 4vw, 28px);
+    /* Maximum size reduced to 28px */
+    height: auto;
+    /* Maintain aspect ratio */
+}
+
+#sidebar .label {
+    font-size: clamp(12px, 1.5vw, 14px);
+    /* Maximum size reduced to 14px */
 }
