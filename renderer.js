@@ -85,12 +85,12 @@ function initHomeDashboard() {
             datasets: [{
                 label: 'Threats',
                 data: [5, 3, 8, 12, 11, 17, 22],  // ← fake data
-                borderColor: '#00D9FF',
-                backgroundColor: 'rgba(0,217,255,0.2)',
+                borderColor: '#00A9BB',
+                backgroundColor: 'rgba(0,169,189,0.18)',
                 fill: true,
                 tension: 0.4,
                 pointRadius: 4,
-                pointBackgroundColor: '#00D9FF'
+                pointBackgroundColor: '#00A9BB'
             }]
         },
         options: {
@@ -112,12 +112,12 @@ function initHomeDashboard() {
             datasets: [{
                 label: 'Encrypted',
                 data: [0, 1, 1, 2, 3, 5, 7],   // ← fake data
-                borderColor: '#6EEB83',
-                backgroundColor: 'rgba(110,235,131,0.2)',
+                borderColor: '#40a68d',
+                backgroundColor: 'rgba(41,101,89,0.18)',
                 fill: true,
                 tension: 0.4,
                 pointRadius: 4,
-                pointBackgroundColor: '#6EEB83'
+                pointBackgroundColor: '#40a68d'
             }]
         },
         options: {
@@ -174,7 +174,7 @@ function initHomeDashboard() {
             datasets: [{
                 label: 'Updates',
                 data: [2, 4, 6, 5, 9, 7, 10],  // ← fake data
-                backgroundColor: '#00D9FF'
+                backgroundColor: '#00A9BB'
             }]
         },
         options: {
