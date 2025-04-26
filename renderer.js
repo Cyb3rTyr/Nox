@@ -1,3 +1,42 @@
+// renderer.js, top of file
+
+Chart.defaults.font.family = 'Rubik';   // global font
+
+Chart.register({
+    id: 'doughnutCenterText',
+    afterDatasetDraw(chart) {
+        if (chart.config.type !== 'doughnut') return;
+
+        const {
+            ctx,
+            data: { datasets },
+            chartArea: { top, left, width, height }
+        } = chart;
+
+        const [value, rest] = datasets[0].data;
+        const total = value + rest;
+        const percentText = total ? Math.round((value / total) * 100) + '%' : '';
+
+        // pull the primary slice’s color
+        const mainColor = Array.isArray(datasets[0].backgroundColor)
+            ? datasets[0].backgroundColor[0]
+            : datasets[0].backgroundColor;
+
+        ctx.save();
+        ctx.font = '700 2rem Rubik';         // bold 2rem Rubik
+        ctx.fillStyle = mainColor;           // match slice color
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const x = left + width / 2;
+        const y = top + height / 2;
+        ctx.fillText(percentText, x, y);
+        ctx.restore();
+    }
+});
+
+
+
 const sidebar = document.getElementById('sidebar');
 const toggleBtn = document.getElementById('toggleSidebar');
 toggleBtn.addEventListener('click', () => {
@@ -92,14 +131,27 @@ function initHomeDashboard() {
         }
     });
 
-    // 3) System Health (doughnut)
+    // ─── replace your existing System Health chart with this ───
+    // calculate your health percentage (swap in your real data)
+    const healthValue = 87;  // e.g. 85%
+
+    // pick color based on thresholds
+    let healthColor;
+    if (healthValue > 75) {
+        healthColor = '#6EEB83';           // green
+    } else if (healthValue >= 50) {
+        healthColor = '#F5A623';           // yellow
+    } else {
+        healthColor = '#FF4C4C';           // red
+    }
+
     new Chart(document.getElementById('healthChart'), {
         type: 'doughnut',
         data: {
-            labels: ['Healthy', 'Remainder'],
+            labels: ['Healthy', 'Remaining'],
             datasets: [{
-                data: [85, 15],  // ← fake percent
-                backgroundColor: ['#00D9FF', '#222'],
+                data: [healthValue, 100 - healthValue],
+                backgroundColor: [healthColor, '#222'],
                 hoverOffset: 4
             }]
         },
@@ -107,9 +159,12 @@ function initHomeDashboard() {
             responsive: true,
             maintainAspectRatio: false,
             cutout: '75%',
-            plugins: { legend: { display: false } }
+            plugins: {
+                legend: { display: false }
+            }
         }
     });
+
 
     // 4) Updates Installed (bar)
     new Chart(document.getElementById('updatesChart'), {
@@ -133,14 +188,24 @@ function initHomeDashboard() {
         }
     });
 
-    // 5) Privacy Trackers Removed (doughnut)
+    // ─── Privacy Trackers Removed with dynamic color ───
+    const privacyValue = 88;  // ← fake placeholder (0–100%)
+    let privacyColor;
+    if (privacyValue > 75) {
+        privacyColor = '#6EEB83';   // green
+    } else if (privacyValue >= 50) {
+        privacyColor = '#F5A623';   // yellow
+    } else {
+        privacyColor = '#FF4C4C';   // red
+    }
+
     new Chart(document.getElementById('privacyChart'), {
         type: 'doughnut',
         data: {
-            labels: ['Removed', 'Left'],
+            labels: ['Removed', 'Remaining'],
             datasets: [{
-                data: [55, 45],  // ← fake percent
-                backgroundColor: ['#F5A623', '#222'],
+                data: [privacyValue, 100 - privacyValue],
+                backgroundColor: [privacyColor, '#222'],
                 hoverOffset: 4
             }]
         },
@@ -148,9 +213,12 @@ function initHomeDashboard() {
             responsive: true,
             maintainAspectRatio: false,
             cutout: '75%',
-            plugins: { legend: { display: false } }
+            plugins: {
+                legend: { display: false }
+            }
         }
     });
+
 }
 
 // fire on first load
