@@ -4,7 +4,6 @@ toggleBtn.addEventListener('click', () => {
     sidebar.classList.toggle('collapsed');
 });
 
-
 // Navigation & page switching
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
@@ -22,11 +21,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         } else if (page === 'file-encryption') {
             const module = await import('./pages/encryption.js');
             if (module.init) module.init();
-        } else if (page === 'vault') {
-            const module = await import('./pages/vault.js');
-            if (module.init) module.init();
         }
-
     });
 });
 

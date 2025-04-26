@@ -40,7 +40,6 @@ body {
     margin-top: 100px;
 }
 
-
 #sidebar.collapsed {
     width: 70px;
 }
@@ -219,7 +218,6 @@ button.action:hover {
     }
 }
 
-
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -325,9 +323,6 @@ button:disabled {
     width: 100%;
     margin-top: auto;
 }
-
-
-
 
 /* icon sizing & hover effect */
 .social-links img {

@@ -1,9 +1,9 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-const vaultPath = path.join(__dirname, 'vault'); // 📂 <-- vault folder
+const vaultPath = path.join(__dirname, 'vault'); // Vault folder path
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -21,7 +21,7 @@ function createWindow() {
     win.loadFile('index.html');
 }
 
-// Ensure vault folder exists
+// App initialization
 app.whenReady().then(() => {
     if (!fs.existsSync(vaultPath)) {
         fs.mkdirSync(vaultPath);
@@ -29,7 +29,7 @@ app.whenReady().then(() => {
     createWindow();
 });
 
-// Update command
+// Winget update command
 ipcMain.handle('run-update-command', async () => {
     return new Promise((resolve, reject) => {
         const child = spawn('winget', ['update']);
@@ -55,7 +55,7 @@ ipcMain.handle('list-vault-folders', async () => {
     }
 });
 
-// List files inside a folder
+// List files inside a specific vault folder
 ipcMain.handle('list-folder-files', async (event, folderName) => {
     try {
         const fullPath = path.join(vaultPath, folderName);
@@ -66,48 +66,33 @@ ipcMain.handle('list-folder-files', async (event, folderName) => {
     }
 });
 
-// Add a new folder
-ipcMain.handle('add-folder-to-vault', async () => {
+// Import and MOVE a whole folder into vault and OPEN the vault folder
+ipcMain.handle('import-folder-to-vault', async () => {
     const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
     if (result.canceled || result.filePaths.length === 0) return null;
+
     const selectedPath = result.filePaths[0];
     const folderName = path.basename(selectedPath);
     const destination = path.join(vaultPath, folderName);
 
     if (!fs.existsSync(destination)) {
-        fs.mkdirSync(destination);
-        // Optionally copy files too
-        const files = fs.readdirSync(selectedPath);
-        for (const file of files) {
-            const src = path.join(selectedPath, file);
-            const dest = path.join(destination, file);
-            fs.copyFileSync(src, dest);
+        try {
+            fs.renameSync(selectedPath, destination); // MOVE instead of copy
+            await shell.openPath(vaultPath); // Open the Vault folder after import
+            return folderName;
+        } catch (err) {
+            console.error(err);
+            return null;
         }
-        return folderName;
     }
     return null;
 });
 
-// Delete folder
+// Delete a folder inside vault
 ipcMain.handle('delete-folder', async (event, folderName) => {
     const fullPath = path.join(vaultPath, folderName);
     try {
         fs.rmSync(fullPath, { recursive: true, force: true });
-        return true;
-    } catch (err) {
-        console.error(err);
-        return false;
-    }
-});
-
-// Drag & drop file into folder
-ipcMain.handle('copy-file-to-folder', async (event, { filePath, folderName }) => {
-    const destFolder = path.join(vaultPath, folderName);
-    const fileName = path.basename(filePath);
-    const destPath = path.join(destFolder, fileName);
-
-    try {
-        fs.renameSync(filePath, destPath);
         return true;
     } catch (err) {
         console.error(err);
