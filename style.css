@@ -345,11 +345,6 @@ social-links img:hover {
     /* Maintain aspect ratio */
 }
 
-#sidebar .label {
-    font-size: clamp(12px, 1.5vw, 14px);
-    /* Maximum size reduced to 14px */
-}
-
 /* Modern scrollbar styling */
 ::-webkit-scrollbar {
     width: 8px;
