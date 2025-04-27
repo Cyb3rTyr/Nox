@@ -20,6 +20,8 @@ function createWindow() {
         },
     });
 
+
+
     // Maximize the window
     mainWindow.maximize();
 

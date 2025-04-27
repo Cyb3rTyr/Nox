@@ -107,11 +107,11 @@ body {
 }
 
 .nav-btn:hover {
-    background: #952dfe79;
+    background: #5e35b143;
 }
 
 .nav-btn.selected {
-    background: #5e35b1;
+    background: #5e35b16d;
     color: #ffffff;
 }
 
@@ -124,6 +124,10 @@ body {
 
 .nav-btn:hover .icon i {
     color: #000000;
+}
+
+.nav-btn.selected .icon-img {
+    filter: brightness(0) saturate(100%);
 }
 
 .nav-btn .label {
@@ -299,7 +303,7 @@ social-links img:hover {
 
 /* Sidebar icons and labels */
 #sidebar .icon-img {
-    width: clamp(24px, 4vw, 28px);
+    width: clamp(30px, 4vw, 35px);
     /* Maximum size reduced to 28px */
     height: auto;
     /* Maintain aspect ratio */
@@ -414,4 +418,13 @@ social-links img:hover {
 /* Preserve original GitHub icon colors */
 .social-links img {
     filter: none !important;
+}
+
+/* collapsed sidebar: apply navy‐blue tint to both icons & logo */
+#sidebar.collapsed .nav-btn .icon-img,
+#sidebar.collapsed #sidebar-logo img {
+    /* same tint you already defined */
+    filter:
+        brightness(0) saturate(100%) invert(21%) sepia(82%) saturate(4500%) hue-rotate(211deg) brightness(0.66) contrast(1.00);
+    transition: filter 0.2s ease;
 }

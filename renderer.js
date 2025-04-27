@@ -70,6 +70,9 @@ document.addEventListener('DOMContentLoaded', initHomeDashboard);
 
 // Prevent double-init
 let chartsInitialized = false;
+// disable borders on all doughnut/pie arcs
+Chart.defaults.elements.arc.borderWidth = 0;
+
 
 function initHomeDashboard() {
     if (chartsInitialized) return;
