@@ -1,7 +1,1 @@
-<p align="center">
-  <img
-    src="https://raw.githubusercontent.com/<YOUR-USERNAME>/<YOUR-REPO>/main/icons/nox_logo_navy.png"
-    alt="Nox Logo"
-    width="108"
-  />
-</p>
+![Image](https://github.com/user-attachments/assets/76daa285-8254-425d-b2e5-20a6fc55f057)
