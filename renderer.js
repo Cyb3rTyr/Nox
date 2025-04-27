@@ -174,7 +174,7 @@ function initHomeDashboard() {
             datasets: [{
                 label: 'Updates',
                 data: [2, 4, 6, 5, 9, 7, 10],  // ← fake data
-                backgroundColor: '#00A9BB'
+                backgroundColor: 'rgba(0, 169, 187,0.3)'
             }]
         },
         options: {

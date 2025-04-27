@@ -13,7 +13,14 @@ body {
     display: flex;
     height: 100vh;
 
-    background-image: linear-gradient(to top, #020f3e 0%, #000000 50%, #000000 100%);
+    background: linear-gradient(to bottom,
+            #000000 0%,
+            /* pure black */
+            #1a0d2d 75%,
+            /* very dark indigo */
+            #3c1361 100%);
+    border-right: 2px solid rgba(0, 0, 0, 0.5);
+    border-right: 2px solid rgba(0, 0, 0, 0.5);
 }
 
 /* Sidebar */
@@ -136,7 +143,13 @@ body {
     flex: 1;
     padding: 20px 30px;
     overflow: auto;
-    background-image: linear-gradient(to top, #020f3e 0%, #000000 50%, #000000 100%);
+    background: linear-gradient(to bottom,
+            #000000 0%,
+            /* pure black */
+            #1a0d2d 75%,
+            /* very dark indigo */
+            #3c1361 100%);
+    border-right: 2px solid rgba(0, 0, 0, 0.5);
     border-radius: 0 8px 8px 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
@@ -401,7 +414,7 @@ social-links img:hover {
 .health-card,
 .updates-card,
 .privacy-card {
-    background: #111111;
+    background: transparent;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -430,4 +443,30 @@ social-links img:hover {
 .chart-container canvas {
     width: 100% !important;
     height: 100% !important;
+}
+
+
+
+/* Navy-blue tint on sidebar icons and logo (approx. #1A237E) */
+.nav-btn .icon-img,
+#sidebar-logo img {
+    /* neutralize then tint towards navy */
+    filter:
+        brightness(0) saturate(100%)
+        /* tuned for a richer navy hue */
+        invert(21%) sepia(82%) saturate(4500%) hue-rotate(211deg)
+        /* brighten up to make it less dark */
+        brightness(0.66) contrast(1.00);
+    transition: filter 0.2s ease;
+}
+
+/* Slightly deeper tone on hover */
+.nav-btn .icon-img:hover {
+    filter:
+        brightness(0) saturate(100%) invert(21%) sepia(82%) saturate(4500%) hue-rotate(211deg) brightness(0.56) contrast(0.95);
+}
+
+/* Preserve original GitHub icon colors */
+.social-links img {
+    filter: none !important;
 }
