@@ -296,61 +296,6 @@ social-links img:hover {
     filter: brightness(1.2);
 }
 
-/* new parts for the vault  */
-
-.vault-file-entry {
-    background: #111;
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.vault-controls {
-    margin-bottom: 20px;
-}
-
-.vault-folder {
-    background: #111;
-    margin: 15px 0;
-    padding: 15px;
-    border-radius: 10px;
-}
-
-.folder-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.folder-files {
-    margin-top: 10px;
-    padding: 10px;
-    background: #222;
-    border-radius: 8px;
-    min-height: 80px;
-}
-
-.file-entry {
-    margin: 5px 0;
-}
-
-.dropzone {
-    margin-top: 10px;
-    padding: 10px;
-    background: #333;
-    border: 2px dashed #BC13FE;
-    text-align: center;
-    border-radius: 8px;
-    color: #c5e2df;
-    cursor: pointer;
-}
-
-.dropzone.dragover {
-    background: #5e35b1;
-}
 
 /* Sidebar icons and labels */
 #sidebar .icon-img {
