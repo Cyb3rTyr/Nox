@@ -1,3 +1,7 @@
-<div align="center">
-  ![Image](https://github.com/user-attachments/assets/bd35dd75-1648-4bd0-b9b1-68e05f7138d6)
-</div>
+<p align="center">
+  <img
+    src="https://user-images.githubusercontent.com/965dac09-6839-4c61-98cf-d872b3ebd6f9"
+    alt="Nox Logo"
+    width="108"
+  />
+</p>
