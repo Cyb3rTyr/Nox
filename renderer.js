@@ -61,6 +61,11 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 
         if (page === 'home') initHomeDashboard();
 
+        // renderer.js
+        if (page === 'malware-defense') {
+            const module = await import('./pages/malwareDefense.js');
+            module.init();
+        }
     });
 });
 
@@ -226,3 +231,20 @@ function initHomeDashboard() {
 
 // fire on first load
 document.addEventListener('DOMContentLoaded', initHomeDashboard);
+
+
+// renderer.js
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        const page = btn.dataset.page;
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(page).classList.add('active');
+        if (page === 'malware-defense') {
+            const mod = await import('./pages/malwareDefense.js');
+            mod.init();
+        }
+        // …other pages…
+    });
+});

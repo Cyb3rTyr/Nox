@@ -1,5 +1,14 @@
+// preload.js
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('noxAPI', {
-    runUpdate: () => ipcRenderer.invoke('run-update-command'),
+contextBridge.exposeInMainWorld('defenderAPI', {
+    /**
+     * Runs a DefenderScanner script.
+     * mode: 'update'|'quick'|'full'|'folder'|'realtime-on'|'realtime-off'
+     * target: optional folder path
+     */
+    run: (mode, target) => ipcRenderer.invoke('defender-run', mode, target)
 });
+
+// Sanity-check in DevTools console:
+console.log('✅ preload loaded — defenderAPI.run is', typeof window.defenderAPI.run);

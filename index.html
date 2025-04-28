@@ -137,9 +137,20 @@
                 </div>
             </div>
 
-            <div id="malware-protection" class="page">
-                <h1>Malware Defense</h1>
-                <p>Detect and remove malware in real-time to keep your system safe.</p>
+            <div id="malware-defense" class="page">
+                <h1>Malware Defense (Defender)</h1>
+                <div class="controls">
+                    <button id="md-update" class="action">Update Definitions</button>
+                    <button id="md-quick" class="action">Quick Scan</button>
+                    <button id="md-full" class="action">Full Scan</button>
+                    <button id="md-folder-btn" class="action">Scan Folder…</button>
+                    <input id="md-folder-input" type="file" webkitdirectory directory style="display:none" />
+                    <button id="md-toggle-realtime" class="action">Turn Real-Time OFF</button>
+
+                    <!-- loader next to buttons -->
+                    <div id="md-loader" class="loader hidden"></div>
+                </div>
+                <div id="md-output" class="health-log"></div>
             </div>
             <div id="system-cleanup" class="page">
                 <h1>System Cleanup</h1>

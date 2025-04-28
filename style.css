@@ -428,3 +428,76 @@ social-links img:hover {
         brightness(0) saturate(100%) invert(21%) sepia(82%) saturate(4500%) hue-rotate(211deg) brightness(0.66) contrast(1.00);
     transition: filter 0.2s ease;
 }
+
+
+#malware-defense .controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.loader {
+    border: 4px solid #333;
+    border-top: 4px solid #BC13FE;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+#malware-defense .controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.loader {
+    border: 4px solid #333;
+    border-top: 4px solid #BC13FE;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+#malware-defense .controls {
+    /* existing flex/layout rules… */
+    margin-bottom: 24px;
+    /* add space below the buttons */
+}
+
+#md-output {
+    max-height: calc(100vh -
+            /*controls height*/
+            120px);
+    overflow-y: auto;
+    /* keep logs scrollable if they grow */
+}
