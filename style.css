@@ -501,3 +501,21 @@ social-links img:hover {
     overflow-y: auto;
     /* keep logs scrollable if they grow */
 }
+
+/* Empty-state card */
+.empty-state {
+    text-align: center;
+    padding: 2em 0;
+    color: #888;
+}
+
+.empty-state img {
+    max-width: 1000px;
+    margin-bottom: 1em;
+    opacity: 0.3;
+}
+
+.empty-state p {
+    font-style: italic;
+    margin: 0;
+}

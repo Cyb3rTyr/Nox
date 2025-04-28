@@ -3,18 +3,24 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
 
+let mainWindow;
 function createWindow() {
-    const win = new BrowserWindow({
-        width: 800, height: 600,
+    // 1) Create the BrowserWindow
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
             nodeIntegration: false
         }
     });
-    win.maximizable = true;
-    win.loadFile('index.html');
-    win.setMenuBarVisibility(false);
+
+    // 2) THEN maximize it
+    mainWindow.maximize();
+
+    // 3) And only now load your HTML
+    mainWindow.loadFile('index.html');
 }
 
 app.whenReady().then(createWindow);
