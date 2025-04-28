@@ -10,7 +10,8 @@
 ## 🚀 Features
 
 - **Malware Defense**  
-  Real-time detection and removal of malware and suspicious processes.
+  As a first-year cybersecurity student without dedicated servers or a custom detection engine (yet), Nox currently leverages Windows Defender via native CLI commands. This gives you real-time monitoring, signature-based and heuristic scans (quick, full, or custom folder), automatic definition updates, quarantine with safe rollback, and customizable exclusion lists — all powered by Defender’s proven engine and without exposing users to complex settings or relying on external servers. Future releases will introduce my own detection algorithms and a standalone malware engine as my skills and resources grow.
+
 
 - **System Cleanup**  
   Scan for and remove junk files, temporary data, and unused applications.
