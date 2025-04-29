@@ -48,7 +48,7 @@ body {
     align-items: center;
     flex: 1;
     width: 100%;
-    margin-top: 100px;
+    margin-top: 40px;
 }
 
 #sidebar.collapsed {
@@ -216,29 +216,6 @@ button.action:hover {
     display: none;
 }
 
-.dots::after {
-    content: '';
-    animation: dots 1.2s steps(3, end) infinite;
-}
-
-@keyframes dots {
-    0% {
-        content: '';
-    }
-
-    33% {
-        content: '.';
-    }
-
-    66% {
-        content: '..';
-    }
-
-    100% {
-        content: '...';
-    }
-}
-
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -284,19 +261,19 @@ button:disabled {
 }
 
 .social-links img {
-    width: 140px;
-    height: 70px;
-    margin-left: 20px;
+    width: clamp(30px, 4vw, 20vh);
+    height: clamp(30px, 4vw, 20vh);
+    margin-left: 1px;
 }
 
 social-links img:hover {
-    filter: brightness(1.2);
+    filter: brightness(2);
 }
 
 
 /* Sidebar icons and labels */
 #sidebar .icon-img {
-    width: clamp(30px, 4vw, 35px);
+    width: clamp(30px, 4vw, 4.5vh);
     /* Maximum size reduced to 28px */
     height: auto;
     /* Maintain aspect ratio */
