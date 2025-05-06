@@ -248,3 +248,15 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         // …other pages…
     });
 });
+
+
+// renderer.js
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        // existing logic...
+        if (page === 'system-cleanup') {
+            const module = await import('./pages/systemCleanup.js');
+            module.init();
+        }
+    });
+});

@@ -488,3 +488,11 @@ social-links img:hover {
     font-style: italic;
     margin: 0;
 }
+
+/* System Cleanup controls */
+#system-cleanup .controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+}

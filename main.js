@@ -42,3 +42,17 @@ ipcMain.handle('defender-run', async (_evt, mode, target) => {
         child.on('error', err => reject(err));
     });
 });
+
+
+// main.js
+ipcMain.handle('cleanup-run', async (_evt, action) => {
+    const scriptPath = path.join(__dirname, 'scripts', 'cleanup.js');
+    return new Promise((resolve, reject) => {
+        const child = spawn('node', [scriptPath, action], { cwd: __dirname, shell: true });
+        let out = '';
+        child.stdout.on('data', d => out += d.toString());
+        child.stderr.on('data', d => out += d.toString());
+        child.on('close', () => resolve(out));
+        child.on('error', err => reject(err));
+    });
+});
