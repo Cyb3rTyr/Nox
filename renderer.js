@@ -44,30 +44,37 @@ toggleBtn.addEventListener('click', () => {
 });
 
 // Navigation & page switching
+// renderer.js
+
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
+        // highlight & show page
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
-
         const page = btn.dataset.page;
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(page).classList.add('active');
 
-        // Load update logic only for system-health
+        // page‐specific init:
         if (page === 'system-health') {
-            const module = await import('./pages/update.js');
-            if (module.init) module.init();
+            const m = await import('./pages/update.js');
+            m.init?.();
         }
-
-        if (page === 'home') initHomeDashboard();
-
-        // renderer.js
-        if (page === 'malware-defense') {
-            const module = await import('./pages/malwareDefense.js');
-            module.init();
+        else if (page === 'home') {
+            initHomeDashboard();
+        }
+        else if (page === 'malware-defense') {
+            const m = await import('./pages/malwareDefense.js');
+            m.init();
+        }
+        else if (page === 'system-cleanup') {
+            // ← THIS IS THE NEW PART:
+            const m = await import('./pages/systemCleanup.js');
+            m.init();
         }
     });
 });
+
 
 // draw charts on first load
 document.addEventListener('DOMContentLoaded', initHomeDashboard);
@@ -259,4 +266,33 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
             module.init();
         }
     });
+});
+
+// Show modal + loader, run scan, display results
+const scanBtn = document.getElementById('sc-scan');
+const modal = document.getElementById('scan-modal');
+const close = document.getElementById('modal-close');
+const loader = document.getElementById('modal-loader');
+const output = document.getElementById('modal-results');
+
+scanBtn.addEventListener('click', async () => {
+    // open modal
+    modal.classList.remove('hidden');
+    loader.style.display = 'block';
+    output.textContent = '';
+
+    try {
+        // call your scan script via the bridge
+        const text = await window.cleanupBridge.run('scan');
+        loader.style.display = 'none';
+        output.textContent = text.trim();
+    } catch (err) {
+        loader.style.display = 'none';
+        output.textContent = 'Error: ' + err.message;
+    }
+});
+
+// close button hides modal
+close.addEventListener('click', () => {
+    modal.classList.add('hidden');
 });

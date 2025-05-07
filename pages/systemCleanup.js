@@ -1,46 +1,67 @@
-// pages/systemCleanup.js
-export function init() {
-    const container = document.getElementById('system-cleanup');
-    container.innerHTML = `
-      <h1>System Cleanup</h1>
-      <div class="controls">
-        <button id="sc-cleanAll" class="action">Clean All Files</button>
-        <button id="sc-scan"      class="action">Scan</button>
-        <button id="sc-cleanOld"  class="action">Clean Old Updates</button>
-        <button id="sc-cleanDl"   class="action">Clean Download Folder</button>
-        <button id="sc-cleanTmp"  class="action">Clean Temp Folders</button>
-        <div id="sc-loader" class="loader hidden"></div>
-      </div>
-      <pre id="sc-output" class="health-log"></pre>
-    `;
+#!/usr/bin/env node
+/**
+ * Usage: node systemCleanup.js scan
+ * Prints for each folder: "# files, # directories"
+ * Then a total line.
+ */
+const fs = require('fs').promises;
+const path = require('path');
+const os = require('os');
 
-    const buttons = {
-        cleanAll: document.getElementById('sc-cleanAll'),
-        scan: document.getElementById('sc-scan'),
-        cleanOld: document.getElementById('sc-cleanOld'),
-        cleanDl: document.getElementById('sc-cleanDl'),
-        cleanTmp: document.getElementById('sc-cleanTmp'),
-    };
-    const loader = document.getElementById('sc-loader');
-    const output = document.getElementById('sc-output');
-
-    async function run(action) {
-        Object.values(buttons).forEach(b => b.disabled = true);
-        loader.classList.remove('hidden');
-        output.textContent = '';
-        try {
-            const result = await window.cleanupAPI.run(action);
-            output.textContent = result;
-        } catch (e) {
-            output.textContent = `Error: ${e.message}`;
+// Recursively count files & dirs in `dir`
+async function countEntries(dir) {
+    let files = 0, dirs = 0;
+    try {
+        const items = await fs.readdir(dir, { withFileTypes: true });
+        for (const it of items) {
+            const full = path.join(dir, it.name);
+            if (it.isDirectory()) {
+                dirs++;
+                const sub = await countEntries(full);
+                files += sub.files;
+                dirs += sub.dirs;
+            } else if (it.isFile()) {
+                files++;
+            }
         }
-        loader.classList.add('hidden');
-        Object.values(buttons).forEach(b => b.disabled = false);
+    } catch (_) {
+        // silently skip unreadable dirs
     }
-
-    buttons.cleanAll.addEventListener('click', () => run('cleanAll'));
-    buttons.scan.addEventListener('click', () => run('scan'));
-    buttons.cleanOld.addEventListener('click', () => run('cleanOldUpdates'));
-    buttons.cleanDl.addEventListener('click', () => run('cleanDownloads'));
-    buttons.cleanTmp.addEventListener('click', () => run('cleanTemp'));
+    return { files, dirs };
 }
+
+async function scan() {
+    const targets = [
+        { name: 'Downloads', dir: path.join(os.homedir(), 'Downloads') },
+        { name: 'Temp (User)', dir: os.tmpdir() },
+        {
+            name: 'Temp (System)', dir: process.platform === 'win32'
+                ? path.join(process.env.windir || 'C:\\Windows', 'Temp')
+                : '/tmp'
+        },
+        {
+            name: 'Old Updates', dir: process.platform === 'win32'
+                ? path.join(process.env.windir || 'C:\\Windows', 'SoftwareDistribution', 'Download')
+                : path.join(os.homedir(), '.cache')
+        },
+    ];
+
+    let totalFiles = 0, totalDirs = 0;
+    for (const t of targets) {
+        const { files, dirs } = await countEntries(t.dir);
+        console.log(`${t.name}: ${files} files, ${dirs} dirs`);
+        totalFiles += files;
+        totalDirs += dirs;
+    }
+    console.log(`Total: ${totalFiles} files, ${totalDirs} dirs`);
+}
+
+(async () => {
+    const cmd = process.argv[2];
+    if (cmd === 'scan') {
+        await scan();
+    } else {
+        console.error('Unknown action:', cmd);
+        process.exit(1);
+    }
+})();

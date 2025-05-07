@@ -10,13 +10,22 @@ contextBridge.exposeInMainWorld('defenderAPI', {
     run: (mode, target) => ipcRenderer.invoke('defender-run', mode, target)
 });
 
-// Sanity-check in DevTools console:
-console.log('✅ preload loaded — defenderAPI.run is', typeof window.defenderAPI.run);
 
-// preload.js
-contextBridge.exposeInMainWorld('cleanupAPI', {
+contextBridge.exposeInMainWorld('cleanupBridge', {
     /**
-     * action: 'scan'|'cleanAll'|'cleanOldUpdates'|'cleanDownloads'|'cleanTemp'
+     * Runs the cleanup script. Returns Promise<string> of stdout.
+     * @param {'scan'|'cleanDownloads'|'cleanTemp'|'cleanOldUpdates'|'cleanAll'} action
      */
-    run: (action) => ipcRenderer.invoke('cleanup-run', action)
+    run: action => ipcRenderer.invoke('cleanup-run', action),
+    /** Cancels the currently running cleanup, if any */
+    cancel: () => ipcRenderer.invoke('cleanup-cancel')
 });
+
+// Sanity‐check in DevTools:
+console.log(
+    '✅ preload loaded – cleanupBridge.run:',
+    typeof window.cleanupBridge?.run,
+    'cleanupBridge.cancel:',
+    typeof window.cleanupBridge?.cancel
+);
+

@@ -161,6 +161,14 @@
 
                 <div class="controls">
                     <button id="sc-scan" class="action">Scan</button>
+                    <div id="scan-modal" class="modal hidden">
+                        <div class="modal-content">
+                            <button id="modal-close" class="modal-close">&times;</button>
+                            <h2>Scan Results</h2>
+                            <div id="modal-loader" class="modal-loader"></div>
+                            <pre id="modal-results" class="modal-results"></pre>
+                        </div>
+                    </div>
                     <button id="sc-clean-all" class="action">Clean All Files</button>
                     <button id="sc-clean-old-updates" class="action">Clean Old Updates</button>
                     <button id="sc-clean-downloads" class="action">Clean Download Folder</button>

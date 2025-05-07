@@ -44,15 +44,44 @@ ipcMain.handle('defender-run', async (_evt, mode, target) => {
 });
 
 
+// ─── at the VERY TOP of main.js ─────────────────────────────────────────────
+let _currentCleanupProc = null;
+let _cleanupCanceled = false;
+
 // main.js
-ipcMain.handle('cleanup-run', async (_evt, action) => {
-    const scriptPath = path.join(__dirname, 'scripts', 'cleanup.js');
+
+// ── System Cleanup IPC ───────────────────────────────────────────────────────
+// ── System Cleanup IPC ───────────────────────────────────────────────────────
+ipcMain.handle('cleanup-run', (_evt, action) => {
+    // Path to your PowerShell scan script
+    const psScript = path.join(__dirname, 'systemCleanup.ps1');
+    console.log(`[cleanup-run] launching PowerShell: ${psScript}, action=${action}`);
+
+    // Spawn PowerShell to run the -Scan switch
+    const child = spawn('powershell.exe', [
+        '-NoProfile',
+        '-ExecutionPolicy', 'Bypass',
+        '-File', psScript,
+        '-Scan'
+    ], {
+        cwd: __dirname,
+        shell: true
+    });
+
     return new Promise((resolve, reject) => {
-        const child = spawn('node', [scriptPath, action], { cwd: __dirname, shell: true });
         let out = '';
         child.stdout.on('data', d => out += d.toString());
         child.stderr.on('data', d => out += d.toString());
-        child.on('close', () => resolve(out));
+        child.on('close', code => resolve(out));
         child.on('error', err => reject(err));
     });
+});
+
+
+
+ipcMain.handle('cleanup-cancel', () => {
+    if (_currentCleanupProc) {
+        _cleanupCanceled = true;
+        _currentCleanupProc.kill();
+    }
 });
