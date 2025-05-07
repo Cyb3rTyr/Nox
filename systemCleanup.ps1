@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Scan common junk folders and report file & folder counts.
+  Scan common junk folders and report file & folder counts as a table.
 
 .DESCRIPTION
   Recursively counts files and directories in:
@@ -9,7 +9,7 @@
     • System Temp
     • Windows Update cache
 
-  Then prints per-folder counts and a grand total.
+  Then prints a formatted table, followed by a total line.
 #>
 
 param(
@@ -29,28 +29,40 @@ $folders = @{
     'Old Updates'   = "$env:WINDIR\SoftwareDistribution\Download"
 }
 
-$totalFiles   = 0
+$totalFiles = 0
 $totalFolders = 0
 
-foreach ($name in $folders.Keys) {
+# Collect results into objects
+$report = foreach ($name in $folders.Keys) {
     $path = $folders[$name]
     if (Test-Path $path) {
-        # Count files
         $files = Get-ChildItem -Path $path -Recurse -File -ErrorAction SilentlyContinue
-        $fileCount = $files.Count
+        $dirs = Get-ChildItem -Path $path -Recurse -Directory -ErrorAction SilentlyContinue
 
-        # Count directories
-        $dirs  = Get-ChildItem -Path $path -Recurse -Directory -ErrorAction SilentlyContinue
+        $fileCount = $files.Count
         $dirCount = $dirs.Count
 
-        Write-Output ("{0}: {1} files, {2} folders" -f $name, $fileCount, $dirCount)
-
-        $totalFiles   += $fileCount
+        $totalFiles += $fileCount
         $totalFolders += $dirCount
+
+        [PSCustomObject]@{
+            Folder  = $name
+            Files   = $fileCount
+            Folders = $dirCount
+        }
     }
     else {
-        Write-Output ("{0}: Path not found: {1}" -f $name, $path)
+        [PSCustomObject]@{
+            Folder  = $name
+            Files   = 'N/A'
+            Folders = 'N/A'
+        }
     }
 }
 
-Write-Output ("Total: {0} files, {1} folders" -f $totalFiles, $totalFolders)
+# Output the table
+$report | Format-Table -AutoSize
+
+# Blank line, then totals
+Write-Host ''
+Write-Host ("Total: {0} files, {1} folders" -f $totalFiles, $totalFolders)
