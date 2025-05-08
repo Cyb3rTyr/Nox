@@ -43,45 +43,36 @@ ipcMain.handle('defender-run', async (_evt, mode, target) => {
     });
 });
 
-
-// ─── at the VERY TOP of main.js ─────────────────────────────────────────────
-let _currentCleanupProc = null;
-let _cleanupCanceled = false;
-
-// main.js
-
-// ── System Cleanup IPC ───────────────────────────────────────────────────────
 // ── System Cleanup IPC ───────────────────────────────────────────────────────
 ipcMain.handle('cleanup-run', (_evt, action) => {
-    // Path to your PowerShell scan script
     const psScript = path.join(__dirname, 'systemCleanup.ps1');
-    console.log(`[cleanup-run] launching PowerShell: ${psScript}, action=${action}`);
-
-    // Spawn PowerShell to run the -Scan switch
     const child = spawn('powershell.exe', [
         '-NoProfile',
         '-ExecutionPolicy', 'Bypass',
         '-File', psScript,
-        '-Scan'
-    ], {
-        cwd: __dirname,
-        shell: true
+        '-Scan',
+        '-ExportCsv'
+    ], { cwd: __dirname, shell: true });
+
+    // forward progress lines as IPC events
+    child.stdout.on('data', chunk => {
+        const lines = chunk.toString().split(/\r?\n/);
+        for (const line of lines) {
+            if (line.startsWith('PROGRESS:')) {
+                const pct = parseInt(line.split(':')[1], 10);
+                mainWindow.webContents.send('cleanup-progress', pct);
+            }
+        }
     });
 
     return new Promise((resolve, reject) => {
         let out = '';
-        child.stdout.on('data', d => out += d.toString());
-        child.stderr.on('data', d => out += d.toString());
-        child.on('close', code => resolve(out));
+        child.stdout.on('data', chunk => {
+            const text = chunk.toString();
+            if (!text.startsWith('PROGRESS:')) out += text;
+        });
+        child.stderr.on('data', chunk => out += chunk.toString());
+        child.on('close', () => resolve(out));
         child.on('error', err => reject(err));
     });
-});
-
-
-
-ipcMain.handle('cleanup-cancel', () => {
-    if (_currentCleanupProc) {
-        _cleanupCanceled = true;
-        _currentCleanupProc.kill();
-    }
 });

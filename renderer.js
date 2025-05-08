@@ -264,35 +264,40 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         if (page === 'system-cleanup') {
             const module = await import('./pages/systemCleanup.js');
             module.init();
+
+            // ← add the snippet HERE
+            const scanBtn = document.getElementById('sc-scan');
+            const modal = document.getElementById('scan-modal');
+            const closeBtn = document.getElementById('modal-close');
+            const progressCt = document.getElementById('modal-progress-container');
+            const progressBar = document.getElementById('modal-progress-bar');
+            const results = document.getElementById('modal-results');
+
+            // Listen for progress updates
+            ipcRenderer.on('cleanup-progress', (_e, pct) => {
+                progCt.classList.remove('hidden');
+                progBar.style.width = pct + '%';
+            });
+
+            scanBtn.addEventListener('click', async () => {
+                modal.classList.remove('hidden');
+                progressCt.classList.remove('hidden');
+                results.textContent = '';
+
+                try {
+                    const out = await window.cleanupBridge.run('scan');
+                    results.textContent = out.trim();
+                } catch (err) {
+                    results.textContent = 'Error: ' + err.message;
+                } finally {
+                    progressCt.classList.add('hidden');
+                }
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
         }
     });
-});
-
-// Show modal + loader, run scan, display results
-const scanBtn = document.getElementById('sc-scan');
-const modal = document.getElementById('scan-modal');
-const close = document.getElementById('modal-close');
-const loader = document.getElementById('modal-loader');
-const output = document.getElementById('modal-results');
-
-scanBtn.addEventListener('click', async () => {
-    // open modal
-    modal.classList.remove('hidden');
-    loader.style.display = 'block';
-    output.textContent = '';
-
-    try {
-        // call your scan script via the bridge
-        const text = await window.cleanupBridge.run('scan');
-        loader.style.display = 'none';
-        output.textContent = text.trim();
-    } catch (err) {
-        loader.style.display = 'none';
-        output.textContent = 'Error: ' + err.message;
-    }
-});
-
-// close button hides modal
-close.addEventListener('click', () => {
-    modal.classList.add('hidden');
 });
