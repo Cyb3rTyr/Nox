@@ -688,3 +688,41 @@ social-links img:hover {
 .hidden {
     display: none !important;
 }
+
+/* CLI output fills full width and only scrolls when necessary */
+#modal-results,
+#sc-modal-output {
+    display: block;
+    width: 100% !important;
+    box-sizing: border-box;
+
+    /* allow wrapping */
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    /* only show scrollbar if content overflows */
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    /* optional: remove default padding/margin */
+    padding: 8px 0;
+    margin: 0;
+
+    /* transparent background */
+    background: transparent;
+}
+
+/* if you still want a max-height so it doesn’t grow too tall */
+#modal-results,
+#sc-modal-output {
+    max-height: 60vh;
+    /* or whatever fits your modal */
+}
+
+/* hide the scrollbar entirely when there’s nothing to scroll */
+#modal-results::-webkit-scrollbar,
+#sc-modal-output::-webkit-scrollbar {
+    display: none;
+}
+
+/* but still allow scrolling when needed via mousewheel or touch */

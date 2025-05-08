@@ -87,6 +87,4 @@ if ($ExportCsv) {
         # first run: create file with header + row
         $summary | Export-Csv -Path $csvPath -NoTypeInformation -Encoding UTF8
     }
-
-    Write-Host 'Totals exported to reports folder.'
 }
