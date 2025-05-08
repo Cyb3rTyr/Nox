@@ -2,8 +2,6 @@
 
 export function init() {
   const container = document.getElementById('system-cleanup');
-
-  // Inject controls + modal, now with a spinner loader
   container.innerHTML = `
     <h1>🧹 System Cleanup</h1>
     <p>Free up disk space and improve performance by cleaning junk files.</p>
@@ -15,15 +13,16 @@ export function init() {
       <button id="sc-cleanTmp" class="action">Clean Temp Folders</button>
     </div>
 
-    <!-- Blocking modal -->
+    <!-- Blocking modal with determinate bar -->
     <div id="sc-modal" class="modal hidden">
       <div class="modal-content">
-        <button id="sc-modal-close" class="modal-close">&times;</button>
+        <button id="sc-modal-close"  class="modal-close">&times;</button>
         <h2 id="sc-modal-title">Working…</h2>
-        <!-- spinner loader -->
-        <div id="sc-modal-loader" class="modal-loader hidden"></div>
-        <!-- (optional) determinate progress bar if you want both -->
-        <div id="sc-modal-progress" class="modal-progress hidden"></div>
+
+        <div id="sc-modal-progress-container" class="modal-progress-container hidden">
+          <div id="sc-modal-progress-bar" class="modal-progress-bar"></div>
+        </div>
+
         <pre id="sc-modal-output"></pre>
         <button id="sc-modal-cancel" class="modal-cancel">Cancel</button>
       </div>
@@ -40,38 +39,37 @@ export function init() {
   };
   const modal = document.getElementById('sc-modal');
   const titleEl = document.getElementById('sc-modal-title');
-  const loaderEl = document.getElementById('sc-modal-loader');
-  const progressEl = document.getElementById('sc-modal-progress');
+  const progCt = document.getElementById('sc-modal-progress-container');
+  const progBar = document.getElementById('sc-modal-progress-bar');
   const outputEl = document.getElementById('sc-modal-output');
   const btnCancel = document.getElementById('sc-modal-cancel');
   const btnClose = document.getElementById('sc-modal-close');
 
-  // Your IPC bridge
-  const cleanup = window.cleanupAPI || window.cleanupBridge;
+  const cleanup = window.cleanupBridge;
 
-  // Close (after done)
-  btnClose.addEventListener('click', () => {
-    modal.classList.add('hidden');
-  });
-
-  // Cancel (during run)
+  // Close & Cancel handlers
+  btnClose.addEventListener('click', () => modal.classList.add('hidden'));
   btnCancel.addEventListener('click', () => {
     btnCancel.disabled = true;
     cleanup.cancel?.();
   });
 
+  // Listen for progress events
+  cleanup.onProgress(pct => {
+    progCt.classList.remove('hidden');
+    progBar.style.width = pct + '%';
+  });
+
   // Core runner
   async function run(action, label) {
-    // disable all buttons
     Object.values(btns).forEach(b => b.disabled = true);
 
-    // prepare modal
     titleEl.textContent = label;
     outputEl.textContent = '';
-    loaderEl.classList.remove('hidden');      // show spinner
-    progressEl.classList.add('hidden');       // hide determinate bar for now
-    btnCancel.style.display = 'inline-block';
+    progBar.style.width = '0%';
+    progCt.classList.remove('hidden');
     btnCancel.disabled = false;
+    btnCancel.style.display = 'inline-block';
     btnClose.style.display = 'none';
     modal.classList.remove('hidden');
 
@@ -84,15 +82,14 @@ export function init() {
           ? '⚠️ Operation canceled.'
           : `❌ Error: ${err.message}`;
     } finally {
-      // hide spinner, enable close button, re‐enable controls
-      loaderEl.classList.add('hidden');
+      progCt.classList.add('hidden');
       btnCancel.style.display = 'none';
       btnClose.style.display = 'inline-block';
       Object.values(btns).forEach(b => b.disabled = false);
     }
   }
 
-  // Wire buttons
+  // Button bindings
   btns.scan.addEventListener('click', () => run('scan', 'Scanning for junk…'));
   btns.cleanAll.addEventListener('click', () => run('cleanAll', 'Cleaning everything…'));
   btns.cleanOld.addEventListener('click', () => run('cleanOldUpdates', 'Cleaning old updates…'));

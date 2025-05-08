@@ -35,8 +35,18 @@ $folders = @{
     'Old Updates'   = "$env:WINDIR\SoftwareDistribution\Download"
 }
 
-# 2) Collect per‐folder counts
+# Prepare for progress reporting
+$totalToProcess = $folders.Count
+$currentIndex = 0
+
+# 2) Collect per‑folder counts with progress
 $report = foreach ($name in $folders.Keys) {
+    $currentIndex++
+    $percent = [int](($currentIndex / $totalToProcess) * 100)
+    Write-Progress -Activity "Scanning junk folders" `
+        -Status "Processing $name ($currentIndex of $totalToProcess)" `
+        -PercentComplete $percent
+
     $path = $folders[$name]
     $files = 0; $dirs = 0
     if (Test-Path $path) {
@@ -49,6 +59,8 @@ $report = foreach ($name in $folders.Keys) {
         Folders = $dirs
     }
 }
+# Clear the progress bar
+Write-Progress -Activity "Scanning junk folders" -Completed
 
 # 3) Print the ASCII table
 $report | Format-Table -AutoSize
@@ -80,8 +92,8 @@ if ($ExportCsv) {
         # load existing into an array, append the summary, keep only last 7
         $existing = @( Import-Csv -Path $csvPath )
         $existing += $summary
-        $trimmed = $existing | Select-Object -Last 7
-        $trimmed | Export-Csv -Path $csvPath -NoTypeInformation -Encoding UTF8 -Force
+        $existing | Select-Object -Last 7 |
+        Export-Csv -Path $csvPath -NoTypeInformation -Encoding UTF8 -Force
     }
     else {
         # first run: create file with header + row

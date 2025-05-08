@@ -12,13 +12,9 @@ contextBridge.exposeInMainWorld('defenderAPI', {
 
 
 contextBridge.exposeInMainWorld('cleanupBridge', {
-    /**
-     * Runs the cleanup script. Returns Promise<string> of stdout.
-     * @param {'scan'|'cleanDownloads'|'cleanTemp'|'cleanOldUpdates'|'cleanAll'} action
-     */
     run: action => ipcRenderer.invoke('cleanup-run', action),
-    /** Cancels the currently running cleanup, if any */
-    cancel: () => ipcRenderer.invoke('cleanup-cancel')
+    cancel: () => ipcRenderer.invoke('cleanup-cancel'),
+    onProgress: callback => ipcRenderer.on('cleanup-progress', (_e, pct) => callback(pct))
 });
 
 // Sanity‐check in DevTools:

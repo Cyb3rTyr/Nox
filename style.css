@@ -796,3 +796,21 @@ social-links img:hover {
         left: 100%;
     }
 }
+
+/* ── Determinate progress bar ───────────────────────────── */
+.modal-progress-container {
+    width: 100%;
+    height: 12px;
+    background: #333;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 16px 0;
+}
+
+.modal-progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #BC13FE;
+    /* your accent */
+    transition: width 0.2s ease;
+}
