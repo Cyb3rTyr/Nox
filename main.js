@@ -45,7 +45,8 @@ ipcMain.handle('defender-run', async (_evt, mode, target) => {
 
 // ── System Cleanup IPC ───────────────────────────────────────────────────────
 ipcMain.handle('cleanup-run', (_evt, action) => {
-    const psScript = path.join(__dirname, 'systemCleanup.ps1');
+    // Update the path to the new location in the scripts folder
+    const psScript = path.join(__dirname, 'scripts', 'systemCleanup.ps1');
     const child = spawn('powershell.exe', [
         '-NoProfile',
         '-ExecutionPolicy', 'Bypass',
