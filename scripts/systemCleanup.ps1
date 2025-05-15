@@ -74,7 +74,7 @@ Write-Host ("Total: {0} files, {1} folders" -f $totalFiles, $totalFolders)
 
 # Build the summary object *before* exporting
 $summary = [PSCustomObject]@{
-    Timestamp    = (Get-Date).ToString("s")
+    Timestamp    = (Get-Date).ToString("MMM dd, yyyy HH:mm:ss")
     TotalFiles   = $totalFiles
     TotalFolders = $totalFolders
 }
