@@ -57,8 +57,6 @@ ipcMain.handle('cleanup-run', (event, action) => {
                 '-ExportCsv'
             ];
             break;
-
-        case 'cleanOldUpdates':
         case 'emptyRecycleBin':
             scriptPath = path.join(__dirname, 'scripts', 'EmptyBin.ps1');
             psArgs = [
