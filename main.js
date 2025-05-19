@@ -65,12 +65,33 @@ ipcMain.handle('cleanup-run', (event, action) => {
                 '-File', scriptPath
             ];
             break;
-
-        // add other cases here if needed:
-        // case 'cleanAll': …
-        // case 'cleanDownloads': …
-        // case 'cleanTemp': …
-
+        case 'cleanDownloads':
+            scriptPath = path.join(__dirname, 'scripts', 'test.ps1');
+            psArgs = [
+                '-NoProfile',
+                '-ExecutionPolicy', 'Bypass',
+                '-File', scriptPath,
+                '-CleanDownloads'
+            ];
+            break;
+        case 'cleanTemp':
+            scriptPath = path.join(__dirname, 'scripts', 'test.ps1');
+            psArgs = [
+                '-NoProfile',
+                '-ExecutionPolicy', 'Bypass',
+                '-File', scriptPath,
+                '-CleanTemp'
+            ];
+            break;
+        case 'cleanAll':
+            scriptPath = path.join(__dirname, 'scripts', 'test.ps1');
+            psArgs = [
+                '-NoProfile',
+                '-ExecutionPolicy', 'Bypass',
+                '-File', scriptPath,
+                '-CleanAll'
+            ];
+            break;
         default:
             throw new Error(`Unknown cleanup action: ${action}`);
     }
