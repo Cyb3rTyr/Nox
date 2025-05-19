@@ -8,7 +8,7 @@ export function init() {
     <div class="controls">
       <button id="sc-scan"     class="action">Scan</button>
       <button id="sc-cleanAll" class="action">Clean All Files</button>
-      <button id="sc-cleanOld" class="action">Clean Old Updates</button>
+      <button id="sc-emptyBin" class="action">Empty Recycle Bin</button>
       <button id="sc-cleanDl"  class="action">Clean Download Folder</button>
       <button id="sc-cleanTmp" class="action">Clean Temp Folders</button>
     </div>
@@ -33,7 +33,7 @@ export function init() {
   const btns = {
     scan: document.getElementById('sc-scan'),
     cleanAll: document.getElementById('sc-cleanAll'),
-    cleanOld: document.getElementById('sc-cleanOld'),
+    emptyBin: document.getElementById('sc-emptyBin'),
     cleanDl: document.getElementById('sc-cleanDl'),
     cleanTmp: document.getElementById('sc-cleanTmp'),
   };
@@ -92,7 +92,7 @@ export function init() {
   // Button bindings
   btns.scan.addEventListener('click', () => run('scan', 'Scanning for junk…'));
   btns.cleanAll.addEventListener('click', () => run('cleanAll', 'Cleaning everything…'));
-  btns.cleanOld.addEventListener('click', () => run('cleanOldUpdates', 'Cleaning old updates…'));
+  btns.emptyBin.addEventListener('click', () => run('emptyRecycleBin', 'Emptying Recycle Bin…'));
   btns.cleanDl.addEventListener('click', () => run('cleanDownloads', 'Emptying Downloads…'));
   btns.cleanTmp.addEventListener('click', () => run('cleanTemp', 'Cleaning Temp…'));
 }
