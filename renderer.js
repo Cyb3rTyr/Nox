@@ -280,6 +280,25 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
             });
 
             scanBtn.addEventListener('click', async () => {
+                // get your button by its ID from index.html:
+                const cleanOldUpdatesBtn = document.getElementById('sc-clean-old-updates');
+
+                cleanOldUpdatesBtn.addEventListener('click', async () => {
+                    modal.classList.remove('hidden');
+                    progressCt.classList.remove('hidden');
+                    results.textContent = '';
+
+                    try {
+                        // invoke the same IPC channel, but passing your new action:
+                        const out = await window.cleanupBridge.run('cleanOldUpdates');
+                        results.textContent = out.trim();
+                    } catch (err) {
+                        results.textContent = 'Error: ' + err.message;
+                    } finally {
+                        progressCt.classList.add('hidden');
+                    }
+                });
+
                 modal.classList.remove('hidden');
                 progressCt.classList.remove('hidden');
                 results.textContent = '';

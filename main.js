@@ -5,7 +5,6 @@ const path = require('path');
 
 let mainWindow;
 function createWindow() {
-    // 1) Create the BrowserWindow
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
@@ -15,19 +14,19 @@ function createWindow() {
             nodeIntegration: false
         }
     });
-
-    // 2) THEN maximize it
     mainWindow.maximize();
-
-    // 3) And only now load your HTML
     mainWindow.loadFile('index.html');
 }
 
 app.whenReady().then(createWindow);
-app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
-app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit();
+});
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+});
 
-// Single handler for defender-run
+// ── Defender Scanner IPC ─────────────────────────────────────────────────────
 ipcMain.handle('defender-run', async (_evt, mode, target) => {
     const scriptPath = path.join(__dirname, 'scripts', 'defenderScanner.js');
     const args = [scriptPath, mode];
@@ -44,36 +43,72 @@ ipcMain.handle('defender-run', async (_evt, mode, target) => {
 });
 
 // ── System Cleanup IPC ───────────────────────────────────────────────────────
-ipcMain.handle('cleanup-run', (_evt, action) => {
-    // Update the path to the new location in the scripts folder
-    const psScript = path.join(__dirname, 'scripts', 'systemCleanup.ps1');
-    const child = spawn('powershell.exe', [
-        '-NoProfile',
-        '-ExecutionPolicy', 'Bypass',
-        '-File', psScript,
-        '-Scan',
-        '-ExportCsv'
-    ], { cwd: __dirname, shell: true });
+ipcMain.handle('cleanup-run', (event, action) => {
+    let scriptPath, psArgs;
 
-    // forward progress lines as IPC events
-    child.stdout.on('data', chunk => {
-        const lines = chunk.toString().split(/\r?\n/);
-        for (const line of lines) {
-            if (line.startsWith('PROGRESS:')) {
-                const pct = parseInt(line.split(':')[1], 10);
-                mainWindow.webContents.send('cleanup-progress', pct);
-            }
-        }
-    });
+    switch (action) {
+        case 'scan':
+            scriptPath = path.join(__dirname, 'scripts', 'systemCleanup.ps1');
+            psArgs = [
+                '-NoProfile',
+                '-ExecutionPolicy', 'Bypass',
+                '-File', scriptPath,
+                '-Scan',
+                '-ExportCsv'
+            ];
+            break;
+
+        case 'cleanOldUpdates':
+            scriptPath = path.join(__dirname, 'scripts', 'test.ps1');
+            psArgs = [
+                '-NoProfile',
+                '-ExecutionPolicy', 'Bypass',
+                '-File', scriptPath
+            ];
+            break;
+
+        // add other cases here if needed:
+        // case 'cleanAll': …
+        // case 'cleanDownloads': …
+        // case 'cleanTemp': …
+
+        default:
+            throw new Error(`Unknown cleanup action: ${action}`);
+    }
 
     return new Promise((resolve, reject) => {
+        const child = spawn('powershell.exe', psArgs, {
+            cwd: __dirname,
+            shell: true
+        });
         let out = '';
+
         child.stdout.on('data', chunk => {
             const text = chunk.toString();
-            if (!text.startsWith('PROGRESS:')) out += text;
+            // split on newlines so we can handle both PROGRESS and output
+            text.split(/\r?\n/).forEach(line => {
+                if (line.startsWith('PROGRESS:')) {
+                    // send progress (0–100) back to renderer
+                    const pct = parseInt(line.slice('PROGRESS:'.length), 10);
+                    event.sender.send('cleanup-progress', pct);
+                } else if (line.trim() !== '') {
+                    // accumulate any non-progress text
+                    out += line + '\n';
+                }
+            });
         });
-        child.stderr.on('data', chunk => out += chunk.toString());
-        child.on('close', () => resolve(out));
+
+        child.stderr.on('data', chunk => {
+            const errText = chunk.toString();
+            event.sender.send('cleanup-error', errText);
+            out += errText;
+        });
+
+        child.on('close', code => {
+            event.sender.send('cleanup-done', code);
+            resolve(out);
+        });
+
         child.on('error', err => reject(err));
     });
 });
