@@ -5,6 +5,9 @@ export function init() {
   container.innerHTML = `
     <h1>🧹 System Cleanup</h1>
     <p>Free up disk space and improve performance by cleaning junk files.</p>
+    </div>
+      <button id="sc-info" class="info-btn" title="About System Cleanup">ℹ️</button>
+    </div>
     <div class="controls">
       <button id="sc-scan"     class="action">Scan</button>
       <button id="sc-cleanAll" class="action">Clean All Files</button>
@@ -30,6 +33,12 @@ export function init() {
   `;
 
   // Grab elements
+  const btnInfo = document.getElementById('sc-info');
+  btnInfo.addEventListener('click', () => {
+    // e.g. show a tooltip or modal explaining this page
+    alert('Use these controls to scan and delete junk files from your system.');
+  });
+
   const btns = {
     scan: document.getElementById('sc-scan'),
     cleanAll: document.getElementById('sc-cleanAll'),
