@@ -830,33 +830,6 @@ social-links img:hover {
     margin: 0;
 }
 
-.info-btn {
-    border: none;
-    background: #BC13FE;
-    color: white;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1rem;
-    line-height: 1;
-}
-
-.info-btn:hover {
-    background: #261a3a;
-}
-
-/* ─── Pin info-button to top-right of page ───────────────────────────────── */
-.info-btn {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 1000;
-    /* make sure it floats above other content */
-}
 
 /* ─── Info Button ───────────────────────────────────────────────────────── */
 /* match your existing .action buttons */
