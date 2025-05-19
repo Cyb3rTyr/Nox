@@ -1,13 +1,16 @@
-// pages/systemCleanup.js
-
 export function init() {
   const container = document.getElementById('system-cleanup');
   container.innerHTML = `
-    <h1>🧹 System Cleanup</h1>
-    <p>Free up disk space and improve performance by cleaning junk files.</p>
-    </div>
+    <!-- ─── HEADER + INFO BUTTON ─────────────────────────── -->
+    <div class="cleanup-header">
+      <div class="header-text">
+        <h1>🧹 System Cleanup</h1>
+        <p>Free up disk space and improve performance by cleaning junk files.</p>
+      </div>
       <button id="sc-info" class="info-btn" title="About System Cleanup">ℹ️</button>
     </div>
+
+    <!-- ─── ACTION CONTROLS ───────────────────────────────── -->
     <div class="controls">
       <button id="sc-scan"     class="action">Scan</button>
       <button id="sc-cleanAll" class="action">Clean All Files</button>
@@ -16,28 +19,58 @@ export function init() {
       <button id="sc-cleanTmp" class="action">Clean Temp Folders</button>
     </div>
 
-    <!-- Blocking modal with determinate bar -->
+    <!-- ─── EXISTING RESULTS MODAL ───────────────────────── -->
     <div id="sc-modal" class="modal hidden">
       <div class="modal-content">
-        <button id="sc-modal-close"  class="modal-close">&times;</button>
+        <button id="sc-modal-close" class="modal-close">&times;</button>
         <h2 id="sc-modal-title">Working…</h2>
-
         <div id="sc-modal-progress-container" class="modal-progress-container hidden">
           <div id="sc-modal-progress-bar" class="modal-progress-bar"></div>
         </div>
-
         <pre id="sc-modal-output"></pre>
         <button id="sc-modal-cancel" class="modal-cancel">Cancel</button>
       </div>
     </div>
+
+    <!-- ─── INFO POPUP MODAL ─────────────────────────────── -->
+    <div id="sc-info-modal" class="info-modal">
+      <div class="info-modal-content">
+        <button class="close" title="Close">&times;</button>
+        <pre id="sc-info-text"></pre>
+      </div>
+    </div>
   `;
 
-  // Grab elements
+  // grab the elements
   const btnInfo = document.getElementById('sc-info');
+  const infoModal = document.getElementById('sc-info-modal');
+  const infoText = document.getElementById('sc-info-text');
+  const infoClose = infoModal.querySelector('.close');
+
   btnInfo.addEventListener('click', () => {
-    // e.g. show a tooltip or modal explaining this page
-    alert('Use these controls to scan and delete junk files from your system.');
+    fetch('InfoBox/systemCleanUp.txt')
+      .then(r => r.ok ? r.text() : Promise.reject(r.status))
+      .then(txt => {
+        infoText.textContent = txt;
+        infoModal.classList.add('visible');
+      })
+      .catch(() => {
+        infoText.textContent = 'Failed to load info.';
+        infoModal.classList.add('visible');
+      });
   });
+
+  infoClose.addEventListener('click', () => {
+    infoModal.classList.remove('visible');
+  });
+
+  // close if you click outside the content box
+  infoModal.addEventListener('click', e => {
+    if (e.target === infoModal) {
+      infoModal.classList.remove('visible');
+    }
+  });
+
 
   const btns = {
     scan: document.getElementById('sc-scan'),

@@ -857,3 +857,80 @@ social-links img:hover {
     z-index: 1000;
     /* make sure it floats above other content */
 }
+
+/* ─── Info Button ───────────────────────────────────────────────────────── */
+/* match your existing .action buttons */
+.info-btn {
+    width: 40px;
+    /* equal width/height → circle */
+    height: 40px;
+    padding: 0;
+    /* remove extra padding */
+    border: none;
+    background: #BC13FE;
+    /* same as .action hover/bg */
+    color: #fff;
+    border-radius: 50%;
+    /* full round */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    /* icon size */
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.info-btn:hover {
+    background: #261a3a;
+    /* same hover as .action */
+}
+
+/* ─── Info Popup Modal ──────────────────────────────────────────────────── */
+/* reuse your existing .modal styles */
+.info-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 50vw;
+    height: 50vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.info-modal.visible {
+    display: flex;
+}
+
+.info-modal-content {
+    position: relative;
+    background: #1a0d2d;
+    /* same as your other .modal-content */
+    padding: 20px 30px;
+    /* same padding */
+    border-radius: 8px;
+    /* same corner radius */
+    width: 80vw;
+    max-width: 90%;
+    /* 80% width but cap at 90% */
+    height: 80vh;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+    color: #c5e2df;
+    /* same text color */
+    overflow: auto;
+}
+
+.info-modal-content .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #c5e2df;
+    /* match modal-close */
+    cursor: pointer;
+}

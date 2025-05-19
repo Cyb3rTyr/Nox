@@ -156,25 +156,27 @@
                 <div id="md-output" class="health-log"></div>
             </div>
             <div id="system-cleanup" class="page">
-                <h1>System Cleanup</h1>
-                <p>Free up disk space and improve performance by cleaning junk files.</p>
+                <!-- ─── HEADER + INFO BUTTON ─────────────────────────── -->
+                <div class="cleanup-header">
+                    <h1>System Cleanup</h1>
+                    <button id="sc-info" class="info-btn" title="About System Cleanup">ℹ️</button>
+                </div>
 
+                <!-- ─── YOUR EXISTING CONTROLS ───────────────────────── -->
                 <div class="controls">
                     <button id="sc-scan" class="action">Scan</button>
-                    <div id="scan-modal" class="modal hidden">
-                        <div class="modal-content">
-                            <button id="modal-close" class="modal-close">&times;</button>
-                            <h2>Scan Results</h2>
-                            <div id="modal-progress-container" class="modal-progress-container hidden">
-                                <div id="modal-progress-bar" class="modal-progress-bar"></div>
-                            </div>
-                            <pre id="modal-results" class="modal-results"></pre>
-                        </div>
-                    </div>
                     <button id="sc-clean-all" class="action">Clean All Files</button>
                     <button id="sc-clean-old-updates" class="action">Clean Old Updates</button>
                     <button id="sc-clean-downloads" class="action">Clean Download Folder</button>
                     <button id="sc-clean-temp" class="action">Clean Temp Folder</button>
+                </div>
+            </div>
+
+            <!-- ─── INFO POPUP MODAL (put this just once, e.g. at the bottom of <body>) ─────────────────────────── -->
+            <div id="sc-info-modal" class="info-modal">
+                <div class="info-modal-content">
+                    <button class="close" title="Close">&times;</button>
+                    <pre id="sc-info-text"></pre>
                 </div>
             </div>
             <div id="malware-scan" class="page">
