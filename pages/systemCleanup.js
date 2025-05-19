@@ -36,7 +36,7 @@ export function init() {
     <div id="sc-info-modal" class="info-modal">
       <div class="info-modal-content">
         <button class="close" title="Close">&times;</button>
-        <pre id="sc-info-text"></pre>
+        <div id="sc-info-text"></div> <!-- changed from <pre> to <div> -->
       </div>
     </div>
   `;
@@ -48,10 +48,11 @@ export function init() {
   const infoClose = infoModal.querySelector('.close');
 
   btnInfo.addEventListener('click', () => {
-    fetch('InfoBox/systemCleanUp.txt')
+    fetch('InfoBox/systemCleanUp.md') // fetch the markdown file
       .then(r => r.ok ? r.text() : Promise.reject(r.status))
-      .then(txt => {
-        infoText.textContent = txt;
+      .then(md => {
+        // Use a markdown parser like marked (make sure it's loaded in your project)
+        infoText.innerHTML = window.marked ? window.marked.parse(md) : md;
         infoModal.classList.add('visible');
       })
       .catch(() => {

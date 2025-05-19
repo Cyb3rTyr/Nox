@@ -1,17 +1,8 @@
 # System Cleanup Guide
 
 Welcome to the **System Cleanup** page!  
+
 This guide explains each button’s purpose, so you can confidently free up disk space and keep your PC running smoothly.
-
----
-
-## 📥 Table of Contents
-
-1. [🗑️ Empty Recycle Bin](#️-empty-recycle-bin)  
-2. [📁 Clean Downloads](#-clean-downloads)  
-3. [🧹 Clean Temp Files](#-clean-temp-files)  
-4. [🧼 Clean All](#-clean-all)  
-5. [🔍 Scan](#-scan)  
 
 ---
 
@@ -66,4 +57,3 @@ Get an overview before you clean. See potential savings and choose the actions y
 ---
 
 > **Tip:** Run **Scan** first, then **Clean All** for the fastest full cleanup, or pick individual actions based on your scan results.
-
