@@ -320,3 +320,18 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         }
     });
 });
+
+
+document.getElementById('ms-info')?.addEventListener('click', () => {
+    const modal = document.getElementById('sc-info-modal');
+    const text = document.getElementById('sc-info-text');
+    if (modal && text) {
+        text.textContent = "Malware Scan checks your system for malicious files and threats.";
+        modal.style.display = 'block';
+    }
+});
+
+document.getElementById('scanner-scan-btn')?.addEventListener('click', function () {
+    const url = document.getElementById('scanner-url-input').value;
+    alert(`Scanning: ${url}`);
+});
