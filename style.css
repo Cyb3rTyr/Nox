@@ -891,3 +891,10 @@ social-links img:hover {
     color: #c5e2df;
     cursor: pointer;
 }
+
+.info-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+}
