@@ -335,3 +335,29 @@ document.getElementById('scanner-scan-btn')?.addEventListener('click', function 
     const url = document.getElementById('scanner-url-input').value;
     alert(`Scanning: ${url}`);
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('info-modal');
+    const contentDiv = document.getElementById('info-box-content');
+    const closeBtn = modal.querySelector('.close');
+
+    document.querySelectorAll('.info-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const mdFile = btn.dataset.md;               // e.g. "home.md"
+            try {
+                const res = await fetch(mdFile);
+                if (!res.ok) throw new Error(res.statusText);
+                const md = await res.text();
+                contentDiv.innerHTML = marked.parse(md);
+            } catch (err) {
+                contentDiv.innerHTML =
+                    `<p style="color:tomato">Error loading ${mdFile}: ${err.message}</p>`;
+            }
+            modal.classList.add('visible');
+        });
+    });
+
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('visible');
+    });
+});

@@ -161,7 +161,7 @@
                 <!-- ─── HEADER + INFO BUTTON ─────────────────────────── -->
                 <div class="cleanup-header">
                     <h1>System Cleanup</h1>
-                    <button id="sc-info" class="info-btn1" title="About System Cleanup">ℹ️</button>
+                    <button class="info-btn" data-md="InfoBox\systemCleanUp.md" title="More info">ℹ️</button>
                 </div>
 
                 <!-- ─── YOUR EXISTING CONTROLS ───────────────────────── -->
@@ -174,20 +174,13 @@
                 </div>
             </div>
 
-            <!-- ─── INFO POPUP MODAL (put this just once, e.g. at the bottom of <body>) ─────────────────────────── -->
-            <div id="sc-info-modal" class="info-modal">
-                <div class="info-modal-content">
-                    <button class="close" title="Close">&times;</button>
-                    <pre id="sc-info-text"></pre>
-                </div>
-            </div>
-
 
             <div id="scanner" class="page">
                 <div
                     style="border: 1px solid #2196f3; background: #e3f2fd; padding: 16px; border-radius: 8px; margin-bottom: 24px; color: #222; font-size: 18px; max-width: 500px;">
                     <strong>Info:</strong> Enter a URL below to scan for details and potential issues.
                 </div>
+                <button class="info-btn" data-md="InfoBox\test.md" title="More info">ℹ️</button>
                 <input type="text" id="scanner-url-input" placeholder="Enter URL"
                     style="padding: 8px; width: 60%; margin-right: 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 18px;" />
                 <button id="scanner-scan-btn"
@@ -198,6 +191,7 @@
 
             <div id="privacy-settings" class="page">
                 <h1>Privacy Settings</h1>
+                <button class="info-btn" data-md="InfoBox\test2.md" title="More info">ℹ️</button>
                 <p>Manage browser history, cookies, and tracking permissions to enhance your privacy.</p>
             </div>
             <!-- System Health -->
@@ -219,6 +213,14 @@
         <!-- Modals and scripts here -->
         <script src="renderer.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+
+        <div class="info-modal" id="info-modal">
+            <div class="info-modal-content">
+                <button class="close" title="Close">×</button>
+                <div id="info-box-content"><!-- MD will go in here --></div>
+            </div>
+        </div>
 
 </body>
 
