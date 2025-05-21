@@ -388,12 +388,12 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const result = await window.urlScanner.scan(url);
                 console.log('Scan result:', result); // Debug log
-                // Show result as preformatted text for clarity
                 modalBody.innerHTML = `<pre>${result}</pre>`;
             } catch (err) {
                 console.error('Scan error:', err); // Debug log
                 modalBody.innerHTML = `<p style="color:tomato">Error: ${err}</p>`;
             }
+            input.value = ''; // Clear the input after scan completes
         });
 
         closeBtn.addEventListener('click', () => {
