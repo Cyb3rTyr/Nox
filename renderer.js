@@ -361,3 +361,16 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.remove('visible');
     });
 });
+
+// Scanner: trigger scan on Enter key
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('scanner-url-input');
+    const button = document.getElementById('scanner-scan-btn');
+    if (input && button) {
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                button.click();
+            }
+        });
+    }
+});

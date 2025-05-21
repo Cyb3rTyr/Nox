@@ -898,3 +898,46 @@ social-links img:hover {
     right: 16px;
     z-index: 999;
 }
+
+/* Center the scanner bar horizontally and add spacing at the top */
+#scanner .scanner-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    width: 100%;
+}
+
+#scanner .scanner-bar input {
+    padding: 8px;
+    width: 60%;
+    margin-right: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 18px;
+    background: rgba(240, 240, 240, 0.7);
+    /* light grey, semi-transparent */
+    color: #222;
+    transition: background 0.2s;
+}
+
+#scanner .scanner-bar input:focus {
+    background: rgba(255, 255, 255, 0.85);
+    outline: 1.5px solid #2196f3;
+}
+
+#scanner .scanner-bar button {
+    padding: 8px 16px;
+    background: rgba(33, 150, 243, 0.7);
+    /* blue, semi-transparent */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.2s;
+}
+
+#scanner .scanner-bar button:hover {
+    background: rgba(33, 150, 243, 0.9);
+}
