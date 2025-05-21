@@ -360,7 +360,16 @@ document.addEventListener('DOMContentLoaded', () => {
     closeBtn.addEventListener('click', () => {
         modal.classList.remove('visible');
     });
+
+    // Close modal when clicking outside the modal content
+    modal.addEventListener('mousedown', (e) => {
+        // If the click is directly on the modal overlay (not inside the content)
+        if (e.target === modal) {
+            modal.classList.remove('visible');
+        }
+    });
 });
+
 
 // Scanner: trigger scan on Enter key
 document.addEventListener('DOMContentLoaded', () => {
