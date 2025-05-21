@@ -17,6 +17,10 @@ contextBridge.exposeInMainWorld('cleanupBridge', {
     onProgress: callback => ipcRenderer.on('cleanup-progress', (_e, pct) => callback(pct))
 });
 
+contextBridge.exposeInMainWorld('urlScanner', {
+    scan: (url) => ipcRenderer.invoke('scan-url', url)
+});
+
 // Sanity‐check in DevTools:
 console.log(
     '✅ preload loaded – cleanupBridge.run:',

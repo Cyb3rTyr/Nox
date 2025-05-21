@@ -406,20 +406,22 @@ social-links img:hover {
 }
 
 .loader {
-    border: 4px solid #333;
-    border-top: 4px solid #BC13FE;
+    border: 4px solid #eee;
+    border-top: 4px solid #00A9BB;
     border-radius: 50%;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-bottom: 1em;
 }
 
 @keyframes spin {
-    from {
+    0% {
         transform: rotate(0deg);
     }
 
-    to {
+    100% {
         transform: rotate(360deg);
     }
 }

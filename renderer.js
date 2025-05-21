@@ -331,11 +331,6 @@ document.getElementById('ms-info')?.addEventListener('click', () => {
     }
 });
 
-document.getElementById('scanner-scan-btn')?.addEventListener('click', function () {
-    const url = document.getElementById('scanner-url-input').value;
-    alert(`Scanning: ${url}`);
-});
-
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('info-modal');
     const contentDiv = document.getElementById('info-box-content');
@@ -361,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.remove('visible');
     });
 
-    // Close modal when clicking outside the modal content
+    // Enable closing info modal by clicking outside the content
     modal.addEventListener('mousedown', (e) => {
         // If the click is directly on the modal overlay (not inside the content)
         if (e.target === modal) {
@@ -371,15 +366,43 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// Scanner: trigger scan on Enter key
+// Scanner: trigger scan on Enter key and show modal with loading/result
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('scanner-url-input');
     const button = document.getElementById('scanner-scan-btn');
-    if (input && button) {
+    const modal = document.getElementById('scanner-modal');
+    const modalBody = document.getElementById('scanner-modal-body');
+    const closeBtn = modal?.querySelector('.close');
+
+    if (input && button && modal && modalBody && closeBtn) {
         input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                button.click();
+            if (e.key === 'Enter') button.click();
+        });
+
+        button.addEventListener('click', async () => {
+            const url = input.value;
+            if (!url) return;
+            // Show modal and loading
+            modal.classList.remove('hidden');
+            modalBody.innerHTML = `<div style="text-align:center;padding:2em;"><span class="loader"></span><br>Scanning...</div>`;
+            try {
+                const result = await window.urlScanner.scan(url);
+                modalBody.textContent = result;
+            } catch (err) {
+                modalBody.innerHTML = `<p style="color:tomato">Error: ${err}</p>`;
             }
         });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Do NOT close scanner modal by clicking outside
+        // (leave this block commented out)
+        // modal.addEventListener('mousedown', (e) => {
+        //     if (e.target === modal) {
+        //         modal.classList.add('hidden');
+        //     }
+        // });
     }
 });

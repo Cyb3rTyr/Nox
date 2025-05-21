@@ -1,6 +1,6 @@
 // main.js
 const { app, BrowserWindow, ipcMain } = require('electron');
-const { spawn } = require('child_process');
+const { spawn, execFile } = require('child_process');
 const path = require('path');
 
 let mainWindow;
@@ -132,5 +132,15 @@ ipcMain.handle('cleanup-run', (event, action) => {
         });
 
         child.on('error', err => reject(err));
+    });
+});
+
+// ── URL Scanner IPC ───────────────────────────────────────────────────────────
+ipcMain.handle('scan-url', async (_event, url) => {
+    return new Promise((resolve, reject) => {
+        execFile('node', [path.join(__dirname, 'scripts/urlScanner.js'), url], (error, stdout, stderr) => {
+            if (error) return reject(stderr || error.message);
+            resolve(stdout);
+        });
     });
 });
