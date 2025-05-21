@@ -946,10 +946,10 @@ social-links img:hover {
 }
 
 #scanner-modal-body {
-    max-height: 375px;
+    max-height: 360px;
     /* or your preferred height */
     overflow-y: auto;
-    padding: 0;
+    padding: 10px 0 0 0;
     margin: 0;
     width: 100%;
     box-sizing: border-box;
@@ -967,4 +967,41 @@ social-links img:hover {
     width: 100%;
     box-sizing: border-box;
     /* No max-height or overflow here! */
+}
+
+#scanner-modal .close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 2rem;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    display: block;
+    /* default visible, JS will hide/show as needed */
+}
+
+#scanner-modal .modal-content {
+    position: relative;
+}
+
+#scanner-modal-body::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+}
+
+#scanner-modal-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+#scanner-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #BC13FE;
+    /* Accent color on hover */
+}
+
+#scanner-modal-body::-webkit-scrollbar-track {
+    background: transparent;
 }

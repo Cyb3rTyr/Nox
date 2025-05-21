@@ -384,6 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!url) return;
             // Show modal and loading
             modal.classList.remove('hidden');
+            closeBtn.style.display = 'none'; // Hide close button
             modalBody.innerHTML = `<div style="text-align:center;padding:2em;"><span class="loader"></span><br>Scanning...</div>`;
             try {
                 const result = await window.urlScanner.scan(url);
@@ -393,6 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Scan error:', err); // Debug log
                 modalBody.innerHTML = `<p style="color:tomato">Error: ${err}</p>`;
             }
+            closeBtn.style.display = 'block'; // Show close button after scan
             input.value = ''; // Clear the input after scan completes
         });
 
