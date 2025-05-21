@@ -387,8 +387,11 @@ document.addEventListener('DOMContentLoaded', () => {
             modalBody.innerHTML = `<div style="text-align:center;padding:2em;"><span class="loader"></span><br>Scanning...</div>`;
             try {
                 const result = await window.urlScanner.scan(url);
-                modalBody.textContent = result;
+                console.log('Scan result:', result); // Debug log
+                // Show result as preformatted text for clarity
+                modalBody.innerHTML = `<pre>${result}</pre>`;
             } catch (err) {
+                console.error('Scan error:', err); // Debug log
                 modalBody.innerHTML = `<p style="color:tomato">Error: ${err}</p>`;
             }
         });

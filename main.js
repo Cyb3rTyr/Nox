@@ -137,10 +137,28 @@ ipcMain.handle('cleanup-run', (event, action) => {
 
 // ── URL Scanner IPC ───────────────────────────────────────────────────────────
 ipcMain.handle('scan-url', async (_event, url) => {
+    console.log('scan-url called with', url);
     return new Promise((resolve, reject) => {
-        execFile('node', [path.join(__dirname, 'scripts/urlScanner.js'), url], (error, stdout, stderr) => {
-            if (error) return reject(stderr || error.message);
-            resolve(stdout);
+        const scriptPath = path.join(__dirname, 'scripts', 'urlScanner.js');
+        const child = spawn('node', [scriptPath, url], { cwd: __dirname, shell: true });
+        let out = '';
+        let err = '';
+
+        child.stdout.on('data', chunk => out += chunk.toString());
+        child.stderr.on('data', chunk => err += chunk.toString());
+
+        child.on('close', code => {
+            console.log('urlScanner.js exited with code', code);
+            if (code === 0) {
+                resolve(out.trim());
+            } else {
+                reject(err || `Script exited with code ${code}`);
+            }
+        });
+
+        child.on('error', err => {
+            console.error('Failed to start urlScanner.js:', err);
+            reject(err);
         });
     });
 });

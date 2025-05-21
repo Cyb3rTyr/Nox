@@ -11,23 +11,20 @@
  * - Final verdict: secure or not
  */
 
-const readline = require('readline');
 const { URL } = require('url');
 const dns = require('dns').promises;
 const http = require('http');
 const https = require('https');
 
 async function run() {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
+    // Accept URL from command-line argument if provided
+    let input = process.argv[2];
 
-    const question = (q) =>
-        new Promise(res => rl.question(q, ans => res(ans.trim())));
-
-    let input = await question('Enter a URL to validate and check security: ');
-    rl.close();
+    // If not provided as argument, exit with error
+    if (!input) {
+        console.error('No URL provided.');
+        process.exit(1);
+    }
 
     // Ensure URL has a scheme
     if (!/^[a-z]+:\/\//i.test(input)) {
@@ -84,9 +81,13 @@ async function run() {
 
         const res = await new Promise(resolve => {
             const req = lib.request(
-                { hostname: current.hostname, port, path: current.pathname + current.search, method: 'HEAD' },
+                { hostname: current.hostname, port, path: current.pathname + current.search, method: 'HEAD', timeout: 5000 },
                 resolve
             );
+            req.on('timeout', () => {
+                req.destroy();
+                resolve({ error: new Error('Request timed out') });
+            });
             req.on('error', err => resolve({ error: err }));
             req.end();
         });
@@ -159,4 +160,7 @@ async function run() {
     );
 }
 
-run();
+run().catch(err => {
+    console.error(err);
+    process.exit(1);
+});
