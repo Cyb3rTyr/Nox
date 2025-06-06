@@ -877,7 +877,7 @@ social-links img:hover {
     padding: 20px;
     border-radius: 8px;
     width: 80vw;
-    max-width: 800px;
+    max-width: 150vh;
     height: 80vh;
     overflow: auto;
     position: relative;

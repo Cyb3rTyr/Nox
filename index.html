@@ -54,13 +54,6 @@
                     <span class="label">Scanner</span>
                 </button>
 
-                <button class="nav-btn" data-page="file-encryption">
-                    <span class="icon">
-                        <img src="icons\encryption.png" alt="File Encryption" class="icon-img">
-                    </span>
-                    <span class="label">File Encryption</span>
-                </button>
-
                 <button class="nav-btn" data-page="privacy-settings">
                     <span class="icon">
                         <img src="icons\privacy.png" alt="Privacy Settings" class="icon-img">
@@ -137,6 +130,7 @@
             </div>
 
             <div id="malware-defense" class="page">
+                <button class="info-btn" data-md="InfoBox\defender.md" title="More info">ℹ️</button>
                 <h1>Malware Defense (Defender)</h1>
                 <div class="controls">
                     <button id="md-update" class="action">Update Definitions</button>
@@ -176,7 +170,7 @@
 
 
             <div id="scanner" class="page">
-                <button class="info-btn" data-md="InfoBox\test.md" title="More info">ℹ️</button>
+                <button class="info-btn" data-md="InfoBox\URL_scanner.md" title="More info">ℹ️</button>
                 <div class="scanner-bar">
                     <input type="text" id="scanner-url-input" placeholder="Enter URL"
                         style="padding: 8px; width: 60%; margin-right: 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 18px;" />
@@ -187,13 +181,23 @@
                 </div>
             </div>
 
+
+
             <div id="privacy-settings" class="page">
                 <h1>Privacy Settings</h1>
-                <button class="info-btn" data-md="InfoBox\test2.md" title="More info">ℹ️</button>
-                <p>Manage browser history, cookies, and tracking permissions to enhance your privacy.</p>
+                <button class="info-btn" data-md="InfoBox\privacySettings.md" title="More info">ℹ️</button>
+                <h2>Disclaimer:</h2>
+                <p>This application leverages O&O ShutUp10++ (© 2007–2025 O&O Software GmbH) to manage Windows privacy
+                    settings. I am only providing the commands needed to run O&O ShutUp10 and do not take any credit for
+                    its creation or functionality.
+                    To use this page, you must first download the official, unmodified O&O ShutUp10 executable yourself
+                    from:</p>
+                <a href="https://www.oo-software.com/en/download/current/ooshutup10" target="_blank"
+                    class="action">Download O&O ShutUp10</a>
             </div>
             <!-- System Health -->
             <div id="system-health" class="page">
+                <button class="info-btn" data-md="InfoBox\health.md" title="More info">ℹ️</button>
                 <h1>System Health</h1>
                 <button id="updateBtn" class="action">Update</button>
                 <button id="upgradeBtn" class="action">Upgrade</button>
