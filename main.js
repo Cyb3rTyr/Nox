@@ -11,9 +11,8 @@ function createWindow() {
         minWidth: 1100,
         minHeight: 700,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            contextIsolation: true,
-            nodeIntegration: false
+            nodeIntegration: true,    // allow require(...) in renderer
+            contextIsolation: false,  // must be false whenever nodeIntegration is true
         }
     });
     mainWindow.maximize();

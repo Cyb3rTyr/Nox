@@ -37,29 +37,42 @@ Chart.register({
 
 
 
-const sidebar = document.getElementById('sidebar');
-const toggleBtn = document.getElementById('toggleSidebar');
-toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleSidebar');
+
+    if (sidebar && toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+    }
 });
+
 
 // Navigation & page switching
 // renderer.js
 
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
-        // highlight & show page
+        const page = btn.dataset.page;
+        if (!page) return;
+
+        // Deselect all nav buttons
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
-        const page = btn.dataset.page;
+
+        // Deactivate all pages, activate selected
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(page).classList.add('active');
+        const pageEl = document.getElementById(page);
+        if (pageEl) pageEl.classList.add('active');
+
 
         // page‐specific init:
         if (page === 'system-health') {
-            const m = await import('./pages/update.js');
-            m.init?.();
+            const module = await import('./pages/system_health.js');
+            module.systemHealthInit();
         }
+
         else if (page === 'home') {
             initHomeDashboard();
         }
