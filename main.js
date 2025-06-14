@@ -2,6 +2,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const { spawn, execFile } = require('child_process');
 const path = require('path');
+const si = require('systeminformation');
 
 let mainWindow;
 function createWindow() {
@@ -22,6 +23,27 @@ function createWindow() {
 }
 
 app.whenReady().then(createWindow);
+
+
+ipcMain.handle('get-system-stats', async () => {
+    // gather everything in parallel
+    const [load, mem, osInfo, time, disks] = await Promise.all([
+        si.currentLoad(),
+        si.mem(),
+        si.osInfo(),
+        si.time(),
+        si.fsSize()
+    ]);
+    return {
+        cpu: load,
+        ram: mem,
+        os: osInfo,
+        uptime: time,
+        disks
+    };
+});
+
+
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });

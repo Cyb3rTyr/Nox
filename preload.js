@@ -1,6 +1,7 @@
 // preload.js
 const { contextBridge, ipcRenderer } = require('electron');
 
+
 contextBridge.exposeInMainWorld('defenderAPI', {
     /**
      * Runs a DefenderScanner script.
@@ -19,6 +20,10 @@ contextBridge.exposeInMainWorld('cleanupBridge', {
 
 contextBridge.exposeInMainWorld('urlScanner', {
     scan: (url) => ipcRenderer.invoke('scan-url', url)
+});
+
+contextBridge.exposeInMainWorld('sysInfo', {
+    getStats: () => ipcRenderer.invoke('get-system-stats')
 });
 
 // Sanity‐check in DevTools:
