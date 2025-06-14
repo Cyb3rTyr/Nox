@@ -26,11 +26,19 @@ contextBridge.exposeInMainWorld('sysInfo', {
     getStats: () => ipcRenderer.invoke('get-system-stats')
 });
 
+// new: update API
+contextBridge.exposeInMainWorld('updateAPI', {
+    getUpdates: () => ipcRenderer.invoke('get-updates'),
+    upgradeAll: () => ipcRenderer.invoke('upgrade-all')
+});
+
 // Sanity‐check in DevTools:
 console.log(
     '✅ preload loaded – cleanupBridge.run:',
     typeof window.cleanupBridge?.run,
     'cleanupBridge.cancel:',
-    typeof window.cleanupBridge?.cancel
+    typeof window.cleanupBridge?.cancel,
+    'upgradeAll →',
+    typeof window.updateAPI?.upgradeAll
 );
 

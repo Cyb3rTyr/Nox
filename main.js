@@ -185,3 +185,25 @@ ipcMain.handle('scan-url', async (_event, url) => {
         });
     });
 });
+
+// handle “what updates are available?”
+ipcMain.handle('get-updates', async () => {
+    // TODO: replace this with your real update-check logic
+    // return an array of { name, version } for each available update
+    return [
+        // example:
+        // { name: 'Nox Core', version: '1.2.3' },
+        // { name: 'Security Definitions', version: '2025.06.14' }
+    ];
+});
+
+// handle “upgrade everything”
+ipcMain.handle('upgrade-all', async () => {
+    // TODO: run your upgrade logic, return a message or error
+    try {
+        // await doUpgrade();
+        return { success: true, message: 'All updates installed successfully.' };
+    } catch (e) {
+        return { success: false, message: 'Upgrade failed: ' + e.message };
+    }
+});
