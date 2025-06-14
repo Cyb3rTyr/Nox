@@ -38,18 +38,26 @@ window.addEventListener('DOMContentLoaded', () => {
             osEl.innerText = `${os.distro} (${os.arch})`;
             upEl.innerText = `${(uptime.uptime / 3600).toFixed(1)} hrs`;
 
-            // Disks
+            // —— Disk Space ——
             diskEl.innerHTML = disks.map(d => {
                 const usedPct = ((d.used / d.size) * 100).toFixed(1);
                 const usedGB = (d.used / 1e9).toFixed(1);
                 const sizeGB = (d.size / 1e9).toFixed(1);
                 const color = usedPct < 75 ? 'green' : usedPct < 90 ? 'orange' : 'red';
-                return `<p>
-          ${d.fs} @ ${d.mount}: 
-          <span style="color:${color}">${usedPct}% used</span> 
-          (${usedGB}/${sizeGB} GB)
-        </p>`;
+
+                return `
+          <div class="disk-item">
+            <div class="disk-header"><strong>${d.mount}</strong></div>
+            <div class="disk-bar">
+              <div class="disk-bar-fill"
+                   style="width:${usedPct}%; background:${color}"></div>
+            </div>
+            <div class="disk-details">
+              ${usedPct}% used — ${usedGB} GB of ${sizeGB} GB
+            </div>
+          </div>`;
             }).join('');
+
         } catch (e) {
             console.error('Stats fetch error', e);
             [cpuEl, ramEl, osEl, upEl, diskEl].forEach(el => el.innerText = 'N/A');
