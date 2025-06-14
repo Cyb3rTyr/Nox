@@ -29,32 +29,43 @@ async function loadSystemInfo() {
         const osInfo = await si.osInfo();
         const time = await si.time();
         const tempData = await si.cpuTemperature();
-        const load = await si.currentLoad();
+        const loadData = await si.currentLoad();
 
-        const cpuUsage = load.currentload.toFixed(1);
+        const cpuUsagePct = loadData.currentLoad.toFixed(1);
         const ramUsed = (mem.used / 1e9).toFixed(1);
         const ramTotal = (mem.total / 1e9).toFixed(1);
         const ramPct = ((mem.used / mem.total) * 100).toFixed(1);
         const cpuTemp = (tempData.main || 0).toFixed(1);
         const uptimeHrs = (time.uptime / 3600).toFixed(1);
 
-        const cpuStatus = cpuUsage > 85 ? '🔴 High load' : '🟢 OK';
-        const ramStatus = ramPct > 90 ? '🔴 High usage' : '🟢 OK';
-        const tempStatus = cpuTemp > 80 ? '🔴 High temp' : '🟢 OK';
+        // CPU status color-coded by usage
+        let cpuStatus, cpuColor;
+        if (cpuUsagePct < 50) { cpuStatus = 'Good'; cpuColor = 'green'; }
+        else if (cpuUsagePct < 75) { cpuStatus = 'Moderate'; cpuColor = 'orange'; }
+        else { cpuStatus = 'High'; cpuColor = 'red'; }
 
-        document.getElementById('cpuInfo').innerText =
-            `${cpu.manufacturer} ${cpu.brand} — ${cpuUsage}% (${cpuStatus})`;
-        document.getElementById('ramInfo').innerText =
-            `${ramUsed} GB / ${ramTotal} GB (${ramPct}%) (${ramStatus})`;
-        document.getElementById('osInfo').innerText =
-            `${osInfo.distro} ${osInfo.arch}`;
-        document.getElementById('uptimeInfo').innerText =
-            `${uptimeHrs} hrs — Temp: ${cpuTemp}°C (${tempStatus})`;
+        // RAM status color-coded by usage
+        let ramStatus, ramColor;
+        if (ramPct < 50) { ramStatus = 'Good'; ramColor = 'green'; }
+        else if (ramPct < 75) { ramStatus = 'Moderate'; ramColor = 'orange'; }
+        else { ramStatus = 'High'; ramColor = 'red'; }
 
         // Warning for heavy load
         const warnEl = document.getElementById('healthWarning');
+
+        document.getElementById('cpuInfo').innerHTML =
+            `${cpu.manufacturer} ${cpu.brand} — ${cpuUsagePct}% ` +
+            `<span style="color:${cpuColor};font-weight:bold">(${cpuStatus})</span>`;
+
+        document.getElementById('ramInfo').innerHTML =
+            `${ramUsed} GB / ${ramTotal} GB — ${ramPct}% ` +
+            `<span style="color:${ramColor};font-weight:bold">(${ramStatus})</span>`;
+
+        document.getElementById('osInfo').innerText = `${osInfo.distro} (${osInfo.arch})`;
+        document.getElementById('uptimeInfo').innerText = `${uptimeHrs} hrs`;
+
         if (warnEl) {
-            warnEl.innerText = (+cpuUsage > 85 || +ramPct > 90 || +cpuTemp > 80)
+            warnEl.innerText = (cpuUsagePct > 85 || ramPct > 90 || cpuTemp > 80)
                 ? '⚠️ For accurate results, close heavy apps before checking.'
                 : '';
         }
@@ -73,11 +84,14 @@ async function loadDiskInfo() {
             const totalGB = (parseInt(disk.blocks, 10) / 1e9).toFixed(1);
             const availGB = (parseInt(disk.available, 10) / 1e9).toFixed(1);
             const usedPct = parseInt(disk.capacity, 10);
-            const status = usedPct > 90 ? '🔴 Nearly full' : '🟢 OK';
+
+            let status;
+            if (usedPct > 90) { status = '🔴 Nearly full'; }
+            else { status = '🟢 OK'; }
 
             container.insertAdjacentHTML('beforeend', `
         <div class="disk-card">
-          <strong>${disk.mounted}</strong>: ${availGB} GB free of ${totalGB} GB (${usedPct}% full) (${status})
+          <strong>${disk.mounted}</strong>: ${availGB} GB free of ${totalGB} GB (${usedPct}% full) ${status}
           <div class="progress"><div class="bar" style="width: ${usedPct}%;"></div></div>
         </div>
       `);
@@ -92,52 +106,48 @@ async function loadWingetUpdates() {
     container.innerHTML = 'Checking for updates…';
 
     exec('winget upgrade', (err, stdout, stderr) => {
-        // If the call totally failed
         if (err && !stdout) {
             container.innerHTML = 'Failed to load updates.';
             return;
         }
 
-        // 1) Check for the “no applicable update” message
-        if (/no applicable update found/i.test(stdout)) {
-            container.innerHTML = '<p><strong>0</strong> updates available: All up to date!</p>';
+        const out = (stdout || stderr).toString();
+
+        if (
+            /no applicable update found/i.test(out) ||
+            /no installed package found matching input criteria/i.test(out) ||
+            /0 upgraded packages/i.test(out)
+        ) {
+            container.innerHTML =
+                '<p><strong>0</strong> updates available: All up to date!</p>';
             return;
         }
 
-        // 2) Otherwise parse out only the real lines of package data:
-        //    skip the header, trim, and drop any empty lines
-        const lines = stdout
-            .split('\n')
-            // remove the header row (which usually starts with “Name” or “Id”)
-            .filter(l => !/^(Name|Id)\s+/i.test(l))
+        const lines = out
+            .split(/\r?\n/)
             .map(l => l.trim())
-            .filter(l => l);
+            .filter(l => l && !/^(Name|Id|Version|Available|Source)/i.test(l))
+            .filter(l => /^\S+\s+\S+\s+\S+/.test(l));
 
         const count = lines.length;
-        container.innerHTML = `<p><strong>${count}</strong> updates available:</p>`
-            + (count
+
+        container.innerHTML = `<p><strong>${count}</strong> updates available:</p>` +
+            (count
                 ? `<ul>${lines.map(u => `<li>${u}</li>`).join('')}</ul>`
-                : '<p>All up to date!</p>'
-            );
+                : '<p>All up to date!</p>');
     });
 }
-
 
 function upgradeAllPackages() {
     const resultBox = document.getElementById('updateResult');
     resultBox.innerText = 'Upgrading all packages…';
-
-    exec('winget upgrade --all -u', (err, stdout, stderr) => {
+    exec('winget upgrade --all -u', (err, _stdout, stderr) => {
         resultBox.innerText = err ? `Error: ${stderr}` : 'Upgrade completed!';
     });
 }
 
-// Expose init for nav handler
+// expose to HTML
+window.upgradeAllPackages = upgradeAllPackages;
+
+// Export init for nav handler
 export { init as systemHealthInit };
-const btn = document.getElementById('upgradeAllBtn');
-if (btn) {
-    btn.addEventListener('click', () => {
-        console.log('Upgrade All clicked');
-        upgradeAllPackages();
-    });
-}
