@@ -31,7 +31,7 @@
                     <span class="icon">
                         <img src="icons\home.png" alt="Home" class="icon-img">
                     </span>
-                    <span class="label">Dashboard</span>
+                    <span class="label">Home</span>
                 </button>
                 <button class="nav-btn" data-page="malware-defense">
                     <span class="icon">
@@ -60,67 +60,76 @@
                     </span>
                     <span class="label">System Health</span>
                 </button>
-
-                <!-- Social links side-by-side -->
-                <div class="social-links">
-                    <a href="https://github.com/Cyb3rTyr/Nox" target="_blank">
-                        <img src="icons/github.png" alt="GitHub" />
-                    </a>
-                </div>
             </div>
         </div>
 
         <div id="content">
+            <!-- static Home page -->
             <div id="home" class="page active">
-                <div class="dashboard-container">
-                    <!-- LEFT COLUMN -->
-                    <div class="left-col">
-                        <!-- Top-left: Threats Blocked -->
-                        <div class="threat-card">
-                            <h2>Threats Blocked</h2>
-                            <div class="chart-container">
-                                <canvas id="threatsChart"></canvas>
-                            </div>
-                        </div>
-                        <!-- Bottom-left: System Health & Updates -->
-                        <div class="bottom-row">
-                            <div class="health-card">
-                                <h2>System Health</h2>
-                                <div class="chart-container">
-                                    <canvas id="healthChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="privacy-card">
-                                <h2>Privacy Trackers</h2>
-                                <div class="chart-container">
-                                    <canvas id="privacyChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Hero / Welcome -->
+                <section class="hero">
+                    <h1>Welcome to Nox</h1>
+                    <p class="tagline">Your all-in-one Windows security toolkit</p>
+                    <p class="version">
+                        Version <span id="appVersion">1.0.0</span>
+                    </p>
+                </section>
 
-                    <!-- RIGHT COLUMN -->
-                    <div class="right-col">
-                        <!-- Top-right: Files Encrypted -->
-                        <div class="files-card">
-                            <h2>Files Encrypted</h2>
-                            <div class="chart-container">
-                                <canvas id="filesChart"></canvas>
-                            </div>
-                        </div>
-                        <!-- Bottom-right: Privacy Trackers -->
-                        <div class="bottom-row">
-                            <div class="updates-card">
-                                <h2>Updates Installed</h2>
-                                <div class="chart-container">
-                                    <canvas id="updatesChart"></canvas>
-                                </div>
-                            </div>
-
-                        </div>
+                <!-- Feature Cards -->
+                <section class="features-grid">
+                    <div class="feature-card" data-page="malware-defense">
+                        <img src="icons/shield.png" alt="Malware Defense" class="icon-img" />
+                        <h3>🛡️ Malware Defense</h3>
+                        <p>Defend against threats with quick or full system scans.</p>
                     </div>
-                </div>
+                    <div class="feature-card" data-page="system-cleanup">
+                        <img src="icons/cleanup.png" alt="System Cleanup" class="icon-img" />
+                        <h3>🧹 System Cleanup</h3>
+                        <p>Reclaim space by emptying bins, temp files, and more.</p>
+                    </div>
+                    <div class="feature-card" data-page="scanner">
+                        <img src="icons/scan.png" alt="URL Scanner" class="icon-img" />
+                        <h3>🔗 URL Scanner</h3>
+                        <p>Check SSL/TLS & DNS to keep every link safe.</p>
+                    </div>
+                    <div class="feature-card" data-page="system-health">
+                        <img src="icons/health.png" alt="System Health" class="icon-img" />
+                        <h3>💻 System Health</h3>
+                        <p>Monitor OS, uptime, CPU & RAM at a glance.</p>
+                    </div>
+                </section>
+
+                <!-- Getting Started Tips -->
+                <section class="quick-start">
+                    <h2>🚀 Getting Started</h2>
+                    <ul>
+                        <li>🔄 Update your definitions in Malware Defense.</li>
+                        <li>🧹 Run a one-click cleanup to reclaim space.</li>
+                        <li>🔒 Scan URLs before you browse the web.</li>
+                        <li>📊 Check System Health anytime.</li>
+                    </ul>
+                </section>
+
+                <!-- Contact Support -->
+                <section class="support">
+                    <h2>✉️ Need Help?</h2>
+                    <p>
+                        If you run into any issues or have questions, drop us a line at
+                        <a href="mailto:support.nox@z3r0app.org">support.nox@z3r0app.org</a>
+                    </p>
+                </section>
+
+                <!-- Footer -->
+                <footer class="footer">
+                    <p>
+                        © 2025 Nox •
+                        <a href="https://github.com/Cyb3rTyr/Nox" target="_blank">GitHub</a> •
+                        <a href="LICENSE">License</a>
+                    </p>
+                </footer>
+
             </div>
+
 
             <div id="malware-defense" class="page">
                 <button class="info-btn" data-md="InfoBox\defender.md" title="More info">ℹ️</button>
