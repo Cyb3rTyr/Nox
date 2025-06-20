@@ -1200,3 +1200,102 @@ social-links img:hover {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ====== new code from 20/06/2025 ==== */
+
+/* style.css */
+
+/* === Scan Controls (Images + Labels) === */
+.scan-controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.scan-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.scan-action img {
+    width: 64px;
+    height: 64px;
+}
+
+.scan-title {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    text-align: center;
+    color: #333;
+}
+
+/* overlay native folder-picker input */
+.scan-action[data-mode="folder"] input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* === Loader === */
+.loader {
+    /* your spinner styles here */
+}
+
+.loader.hidden {
+    display: none;
+}
+
+/* === Progress Bar === */
+.progress-container {
+    width: 80%;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+}
+
+.progress-container.hidden {
+    display: none;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #eee;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background: #4CAF50;
+    transition: width 0.5s ease;
+}
+
+/* Step labels */
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+}
+
+.step-label {
+    font-size: 0.8rem;
+    color: #555;
+    width: 33.33%;
+    text-align: center;
+}
+
+/* Dim controls while scanning */
+.md-scanning .scan-controls {
+    opacity: 0.3;
+    pointer-events: none;
+}

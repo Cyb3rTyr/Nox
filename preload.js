@@ -42,3 +42,17 @@ console.log(
     typeof window.updateAPI?.upgradeAll
 );
 
+
+// ====== new code from 20/06/2025 ====
+
+contextBridge.exposeInMainWorld('defenderAPI', {
+    // your existing .run()…
+    run: window.defenderAPI.run,
+    // new: report total bytes on your system drive
+    getDiskBytes: async () => {
+        const drives = await driveList();
+        // on Windows it’ll be C:, on *nix "/"
+        const sys = drives.find(d => d.filesystem.startsWith('C:') || d.mounted === '/');
+        return sys.blocks * sys.blockSize;
+    }
+});

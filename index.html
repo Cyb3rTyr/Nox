@@ -131,25 +131,51 @@
             </div>
 
 
+            <!-- index.html -->
             <div id="malware-defense" class="page">
                 <button class="info-btn" data-md="InfoBox\defender.md" title="More info">ℹ️</button>
                 <h1>Malware Defense (Defender)</h1>
-                <div class="controls">
-                    <button id="md-update" class="action">Update Definitions</button>
-                    <button id="md-quick" class="action">Quick Scan</button>
-                    <button id="md-full" class="action">Full Scan</button>
-                    <button id="md-folder-btn" class="action">Scan Folder…</button>
-                    <input id="md-folder-input" type="file" webkitdirectory directory style="display:none" />
-                    <button id="md-toggle-realtime" class="action">Turn Real-Time OFF</button>
-                    <!-- loader next to buttons -->
-                    <div id="md-loader" class="loader hidden"></div>
+
+                <!-- IMAGE-BASED CONTROLS -->
+                <div class="scan-controls">
+                    <div class="scan-action" data-mode="quick">
+                        <img src="icons/quick_scan.png" alt="Quick Scan">
+                        <div class="scan-title">Quick Scan</div>
+                    </div>
+                    <div class="scan-action" data-mode="full">
+                        <img src="icons/full_scan.png" alt="Full Scan">
+                        <div class="scan-title">Full Scan</div>
+                    </div>
+                    <div class="scan-action" data-mode="folder">
+                        <img src="icons/scan_folder.png" alt="Scan Folder">
+                        <div class="scan-title">Scan Folder…</div>
+                        <input id="md-folder-input" type="file" webkitdirectory directory style="display:none" />
+                    </div>
+                    <div class="scan-action" data-mode="realtime">
+                        <img id="md-realtime-icon" src="icons/real_time_on.png" alt="Real-Time Protection">
+                        <div class="scan-title">Real-Time</div>
+                    </div>
                 </div>
-                <!-- Empty-state placeholder -->
-                <div id="md-empty" class="empty-state">
-                    <img src="icons/scann_friend.png" alt="No scans yet" />
+
+                <!-- existing loader (hidden by default) -->
+                <div id="md-loader" class="loader hidden"></div>
+
+                <!-- FAKE 3-STEP PROGRESS BAR -->
+                <div class="progress-container hidden">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <span class="step-label">Starting</span>
+                        <span class="step-label">Analyzing</span>
+                        <span class="step-label">Processing</span>
+                    </div>
                 </div>
+
+                <!-- output / final result -->
                 <div id="md-output" class="health-log"></div>
             </div>
+
 
 
 
