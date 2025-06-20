@@ -269,6 +269,28 @@ ipcMain.handle('get-scan-estimate', async (_evt, mode, folderPath) => {
     }
 
     return 30; // fallback
+
+    // Parse the result string:
+    const resultText = scanResult.trim();
+    const isClean = /no threats detected/i.test(resultText);
+
+    // Clear the bar and loading state
+    stopProgress();
+    container.classList.remove('loading');
+
+    // Update UI based on clean vs. infected
+    if (isClean) {
+        output.innerHTML = '<div class="clean-status">✅ No threats found.</div>';
+    } else {
+        // Split into lines and list them
+        const lines = resultText.split('\\n').filter(l => l.trim());
+        const items = lines.map(l => `<li>${l}</li>`).join('');
+        output.innerHTML = `
+    <div class="threat-status">
+      ⚠️ <strong>Threats detected:</strong>
+      <ul>${items}</ul>
+    </div>`;
+    }
 });
 
 
