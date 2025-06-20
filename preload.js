@@ -3,13 +3,17 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 
 contextBridge.exposeInMainWorld('defenderAPI', {
-    /**
-     * Runs a DefenderScanner script.
-     * mode: 'update'|'quick'|'full'|'folder'|'realtime-on'|'realtime-off'
-     * target: optional folder path
-     */
-    run: (mode, target) => ipcRenderer.invoke('defender-run', mode, target)
+    run: (mode, target) => ipcRenderer.invoke('defender-run', mode, target),
+
+    getDiskBytes: async () => {
+        const drives = await require('node-disk-info').driveList();
+        const sys = drives.find(d => d.filesystem.startsWith('C:') || d.mounted === '/');
+        return sys.blocks * sys.blockSize;
+    },
+
+    getScanEstimate: (mode, target) => ipcRenderer.invoke('get-scan-estimate', mode, target)
 });
+
 
 
 contextBridge.exposeInMainWorld('cleanupBridge', {
@@ -41,18 +45,3 @@ console.log(
     'upgradeAll →',
     typeof window.updateAPI?.upgradeAll
 );
-
-
-// ====== new code from 20/06/2025 ====
-
-contextBridge.exposeInMainWorld('defenderAPI', {
-    // your existing .run()…
-    run: window.defenderAPI.run,
-    // new: report total bytes on your system drive
-    getDiskBytes: async () => {
-        const drives = await driveList();
-        // on Windows it’ll be C:, on *nix "/"
-        const sys = drives.find(d => d.filesystem.startsWith('C:') || d.mounted === '/');
-        return sys.blocks * sys.blockSize;
-    }
-});

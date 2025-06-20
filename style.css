@@ -1204,9 +1204,6 @@ social-links img:hover {
 
 /* ====== new code from 20/06/2025 ==== */
 
-/* style.css */
-
-/* === Scan Controls (Images + Labels) === */
 .scan-controls {
     display: flex;
     justify-content: center;
@@ -1237,7 +1234,6 @@ social-links img:hover {
     color: #333;
 }
 
-/* overlay native folder-picker input */
 .scan-action[data-mode="folder"] input {
     position: absolute;
     inset: 0;
@@ -1245,16 +1241,6 @@ social-links img:hover {
     cursor: pointer;
 }
 
-/* === Loader === */
-.loader {
-    /* your spinner styles here */
-}
-
-.loader.hidden {
-    display: none;
-}
-
-/* === Progress Bar === */
 .progress-container {
     width: 80%;
     max-width: 600px;
@@ -1277,10 +1263,8 @@ social-links img:hover {
     width: 0%;
     height: 100%;
     background: #4CAF50;
-    transition: width 0.5s ease;
 }
 
-/* Step labels */
 .progress-steps {
     display: flex;
     justify-content: space-between;
@@ -1290,12 +1274,59 @@ social-links img:hover {
 .step-label {
     font-size: 0.8rem;
     color: #555;
-    width: 33.33%;
+    width: 25%;
     text-align: center;
 }
 
-/* Dim controls while scanning */
+@keyframes fillProgress {
+    0% {
+        width: 0%;
+    }
+
+    25% {
+        width: 25%;
+    }
+
+    50% {
+        width: 50%;
+    }
+
+    75% {
+        width: 75%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
 .md-scanning .scan-controls {
     opacity: 0.3;
     pointer-events: none;
+}
+
+.controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.icon-btn:focus {
+    outline: 2px solid #4CAF50;
+    outline-offset: 2px;
+}
+
+.scan-icon {
+    width: 300px;
+    height: 300px;
+    display: block;
+    pointer-events: none;
+    /* let the button handle clicks */
 }

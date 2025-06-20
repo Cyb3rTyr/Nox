@@ -3,6 +3,11 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const { spawn, execFile } = require('child_process');
 const path = require('path');
 const si = require('systeminformation');
+const fs = require('fs');
+const { promisify } = require('util');
+const stat = promisify(fs.stat);
+const readdir = promisify(fs.readdir);
+
 
 let mainWindow;
 function createWindow() {
@@ -205,5 +210,72 @@ ipcMain.handle('upgrade-all', async () => {
         return { success: true, message: 'All updates installed successfully.' };
     } catch (e) {
         return { success: false, message: 'Upgrade failed: ' + e.message };
+    }
+});
+
+
+
+
+ipcMain.handle('get-scan-estimate', async (_evt, mode, folderPath) => {
+    console.log('💡 get-scan-estimate called:', mode, folderPath);
+    const SCAN_SPEED_MBPS = 80;
+    const SAFETY_FACTOR = 1.2;
+
+    async function getFolderSize(dir) {
+        let total = 0;
+        try {
+            const entries = await readdir(dir, { withFileTypes: true });
+            for (const entry of entries) {
+                const fullPath = path.join(dir, entry.name);
+                try {
+                    if (entry.isDirectory()) {
+                        total += await getFolderSize(fullPath);
+                    } else if (entry.isFile()) {
+                        const { size } = await stat(fullPath);
+                        total += size;
+                    }
+                } catch { }
+            }
+        } catch { }
+        return total;
+    }
+
+    if (mode === 'quick') {
+        const quickPaths = [
+            'C:\\Windows',
+            'C:\\Program Files',
+            'C:\\Program Files (x86)',
+            'C:\\Users'
+        ];
+        let totalBytes = 0;
+        for (const p of quickPaths) {
+            totalBytes += await getFolderSize(p);
+        }
+        const secs = (totalBytes / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY_FACTOR;
+        return Math.round(secs);
+    }
+
+    if (mode === 'full') {
+        const disks = await si.fsSize();
+        const used = disks.reduce((acc, d) => acc + d.used, 0);
+        const secs = (used / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY_FACTOR;
+        return Math.round(secs);
+    }
+
+    if (mode === 'folder' && folderPath) {
+        const size = await getFolderSize(folderPath);
+        const secs = (size / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY_FACTOR;
+        return Math.round(secs);
+    }
+
+    return 30; // fallback
+});
+
+
+// ── Ensure all scans stop when quitting ─────────────────────────────────
+app.on('before-quit', () => {
+    for (const child of runningScans) {
+        // SIGTERM on Unix, TerminateProcess on Windows
+        child.kill();
     }
 });
