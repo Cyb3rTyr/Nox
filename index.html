@@ -132,10 +132,10 @@
 
 
             <div id="malware-defense" class="page">
-                <button class="info-btn" data-md="InfoBox\defender.md" title="More info">ℹ️</button>
+                <button class="info-btn" data-md="InfoBox\defender.md">ℹ️</button>
                 <h1>Malware Defense (Defender)</h1>
 
-                <!-- CONTROLS: Quick, Full, Folder -->
+                <!-- CONTROLS -->
                 <div class="controls">
                     <button id="md-quick" class="icon-btn">
                         <img src="icons/quick_scan.png" alt="Quick Scan" class="scan-icon">
@@ -149,21 +149,24 @@
                     <input id="md-folder-input" type="file" webkitdirectory directory hidden />
                 </div>
 
-                <!-- PROGRESS BAR (must be here for the JS to animate) -->
+                <!-- PROGRESS BAR -->
                 <div class="progress-container hidden">
                     <div class="progress-bar">
                         <div class="progress-fill"></div>
                     </div>
-                    <div class="progress-steps">
-                        <span class="step-label">Initializing</span>
-                        <span class="step-label">Indexing</span>
-                        <span class="step-label">Scanning</span>
-                        <span class="step-label">Finalizing</span>
-                    </div>
+                    <!-- if you want just “Scanning…” you can remove this entire .progress-steps block -->
+                    <div class="progress-status">Scanning…</div>
                 </div>
 
+                <!-- EMPTY‐STATE PLACEHOLDER (will be hidden on scan start) -->
+                <div id="md-empty" class="empty-state">
+                    <img src="icons/scann_friend.png" alt="No scans yet" />
+                </div>
+
+                <!-- ACTUAL RESULTS OUTPUT (only one!) -->
                 <div id="md-output" class="health-log"></div>
             </div>
+
 
 
 

@@ -217,80 +217,55 @@ ipcMain.handle('upgrade-all', async () => {
 
 
 ipcMain.handle('get-scan-estimate', async (_evt, mode, folderPath) => {
-    console.log('💡 get-scan-estimate called:', mode, folderPath);
     const SCAN_SPEED_MBPS = 80;
-    const SAFETY_FACTOR = 1.2;
+    const SAFETY = 1.05;
 
-    async function getFolderSize(dir) {
-        let total = 0;
-        try {
-            const entries = await readdir(dir, { withFileTypes: true });
-            for (const entry of entries) {
-                const fullPath = path.join(dir, entry.name);
-                try {
-                    if (entry.isDirectory()) {
-                        total += await getFolderSize(fullPath);
-                    } else if (entry.isFile()) {
-                        const { size } = await stat(fullPath);
-                        total += size;
-                    }
-                } catch { }
-            }
-        } catch { }
-        return total;
-    }
-
+    // --- QUICK SCAN: use Defender’s QuickScanPathInclude ---
     if (mode === 'quick') {
-        const quickPaths = [
-            'C:\\Windows',
-            'C:\\Program Files',
-            'C:\\Program Files (x86)',
-            'C:\\Users'
-        ];
-        let totalBytes = 0;
-        for (const p of quickPaths) {
-            totalBytes += await getFolderSize(p);
+        // 1) ask Defender which folders it *actually* includes
+        const ps = spawn('powershell.exe', [
+            '-NoProfile', '-ExecutionPolicy', 'Bypass',
+            '-Command', '(Get-MpPreference).QuickScanPathInclude'
+        ], { shell: true });
+
+        let out = '';
+        for await (const chunk of ps.stdout) { out += chunk.toString(); }
+        await new Promise(r => ps.on('close', r));
+
+        // 2) split into lines, trim, filter empties
+        const paths = out
+            .split(/\r?\n/)
+            .map(l => l.trim())
+            .filter(l => l);
+
+        // 3) walk each folder and accumulate bytes + file count
+        let totalBytes = 0, totalFiles = 0;
+        for (const p of paths) {
+            const stats = await getFolderStats(p);
+            totalBytes += stats.bytes;
+            totalFiles += stats.files;
         }
-        const secs = (totalBytes / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY_FACTOR;
-        return Math.round(secs);
+
+        // 4) compute seconds from bytes
+        const secs = Math.round((totalBytes / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY);
+        return { secs, files: totalFiles };
     }
 
+    // --- FULL SCAN and FOLDER SCAN as before ---
     if (mode === 'full') {
-        const disks = await si.fsSize();
-        const used = disks.reduce((acc, d) => acc + d.used, 0);
-        const secs = (used / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY_FACTOR;
-        return Math.round(secs);
+        const disks = await require('systeminformation').fsSize();
+        const used = disks.reduce((a, d) => a + d.used, 0);
+        const secs = Math.round((used / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY);
+        return { secs, files: null };
     }
-
     if (mode === 'folder' && folderPath) {
-        const size = await getFolderSize(folderPath);
-        const secs = (size / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY_FACTOR;
-        return Math.round(secs);
+        const stats = await getFolderStats(folderPath);
+        const secs = Math.round((stats.bytes / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY);
+        return { secs, files: stats.files };
     }
 
-    return 30; // fallback
-
-    // Parse the result string:
-    const resultText = scanResult.trim();
-    const isClean = /no threats detected/i.test(resultText);
-
-    // Clear the bar and loading state
-    stopProgress();
-    container.classList.remove('loading');
-
-    // Update UI based on clean vs. infected
-    if (isClean) {
-        output.innerHTML = '<div class="clean-status">✅ No threats found.</div>';
-    } else {
-        // Split into lines and list them
-        const lines = resultText.split('\\n').filter(l => l.trim());
-        const items = lines.map(l => `<li>${l}</li>`).join('');
-        output.innerHTML = `
-    <div class="threat-status">
-      ⚠️ <strong>Threats detected:</strong>
-      <ul>${items}</ul>
-    </div>`;
-    }
+    // fallback
+    return { secs: 30, files: null };
 });
 
 
