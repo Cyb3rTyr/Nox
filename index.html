@@ -132,45 +132,24 @@
 
 
             <div id="malware-defense" class="page">
-                <button class="info-btn" data-md="InfoBox\defender.md">ℹ️</button>
+                <button class="info-btn" data-md="InfoBox\defender.md" title="More info">ℹ️</button>
                 <h1>Malware Defense (Defender)</h1>
-
-                <!-- CONTROLS -->
                 <div class="controls">
-                    <button id="md-quick" class="icon-btn">
-                        <img src="icons/quick_scan.png" alt="Quick Scan" class="scan-icon">
-                    </button>
-                    <button id="md-full" class="icon-btn">
-                        <img src="icons/full_scan.png" alt="Full Scan" class="scan-icon">
-                    </button>
-                    <button id="md-folder-btn" class="icon-btn">
-                        <img src="icons/scan_folder.png" alt="Scan Folder" class="scan-icon">
-                    </button>
-                    <input id="md-folder-input" type="file" webkitdirectory directory hidden />
+                    <button id="md-update" class="action">Update Definitions</button>
+                    <button id="md-quick" class="action">Quick Scan</button>
+                    <button id="md-full" class="action">Full Scan</button>
+                    <button id="md-folder-btn" class="action">Scan Folder…</button>
+                    <input id="md-folder-input" type="file" webkitdirectory directory style="display:none" />
+                    <button id="md-toggle-realtime" class="action">Turn Real-Time OFF</button>
+                    <!-- loader next to buttons -->
+                    <div id="md-loader" class="loader hidden"></div>
                 </div>
-
-                <!-- PROGRESS BAR -->
-                <div class="progress-container hidden">
-                    <div class="progress-bar">
-                        <div class="progress-fill"></div>
-                    </div>
-                    <!-- if you want just “Scanning…” you can remove this entire .progress-steps block -->
-                    <div class="progress-status">Scanning…</div>
-                </div>
-
-                <!-- EMPTY‐STATE PLACEHOLDER (will be hidden on scan start) -->
+                <!-- Empty-state placeholder -->
                 <div id="md-empty" class="empty-state">
                     <img src="icons/scann_friend.png" alt="No scans yet" />
                 </div>
-
-                <!-- ACTUAL RESULTS OUTPUT (only one!) -->
                 <div id="md-output" class="health-log"></div>
             </div>
-
-
-
-
-
 
 
 

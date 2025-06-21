@@ -3,11 +3,6 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const { spawn, execFile } = require('child_process');
 const path = require('path');
 const si = require('systeminformation');
-const fs = require('fs');
-const { promisify } = require('util');
-const stat = promisify(fs.stat);
-const readdir = promisify(fs.readdir);
-
 
 let mainWindow;
 function createWindow() {
@@ -210,69 +205,5 @@ ipcMain.handle('upgrade-all', async () => {
         return { success: true, message: 'All updates installed successfully.' };
     } catch (e) {
         return { success: false, message: 'Upgrade failed: ' + e.message };
-    }
-});
-
-
-
-
-ipcMain.handle('get-scan-estimate', async (_evt, mode, folderPath) => {
-    const SCAN_SPEED_MBPS = 80;
-    const SAFETY = 1.05;
-
-    // --- QUICK SCAN: use Defender’s QuickScanPathInclude ---
-    if (mode === 'quick') {
-        // 1) ask Defender which folders it *actually* includes
-        const ps = spawn('powershell.exe', [
-            '-NoProfile', '-ExecutionPolicy', 'Bypass',
-            '-Command', '(Get-MpPreference).QuickScanPathInclude'
-        ], { shell: true });
-
-        let out = '';
-        for await (const chunk of ps.stdout) { out += chunk.toString(); }
-        await new Promise(r => ps.on('close', r));
-
-        // 2) split into lines, trim, filter empties
-        const paths = out
-            .split(/\r?\n/)
-            .map(l => l.trim())
-            .filter(l => l);
-
-        // 3) walk each folder and accumulate bytes + file count
-        let totalBytes = 0, totalFiles = 0;
-        for (const p of paths) {
-            const stats = await getFolderStats(p);
-            totalBytes += stats.bytes;
-            totalFiles += stats.files;
-        }
-
-        // 4) compute seconds from bytes
-        const secs = Math.round((totalBytes / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY);
-        return { secs, files: totalFiles };
-    }
-
-    // --- FULL SCAN and FOLDER SCAN as before ---
-    if (mode === 'full') {
-        const disks = await require('systeminformation').fsSize();
-        const used = disks.reduce((a, d) => a + d.used, 0);
-        const secs = Math.round((used / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY);
-        return { secs, files: null };
-    }
-    if (mode === 'folder' && folderPath) {
-        const stats = await getFolderStats(folderPath);
-        const secs = Math.round((stats.bytes / (1024 * 1024) / SCAN_SPEED_MBPS) * SAFETY);
-        return { secs, files: stats.files };
-    }
-
-    // fallback
-    return { secs: 30, files: null };
-});
-
-
-// ── Ensure all scans stop when quitting ─────────────────────────────────
-app.on('before-quit', () => {
-    for (const child of runningScans) {
-        // SIGTERM on Unix, TerminateProcess on Windows
-        child.kill();
     }
 });

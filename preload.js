@@ -3,17 +3,13 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 
 contextBridge.exposeInMainWorld('defenderAPI', {
-    run: (mode, target) => ipcRenderer.invoke('defender-run', mode, target),
-
-    getDiskBytes: async () => {
-        const drives = await require('node-disk-info').driveList();
-        const sys = drives.find(d => d.filesystem.startsWith('C:') || d.mounted === '/');
-        return sys.blocks * sys.blockSize;
-    },
-
-    getScanEstimate: (mode, target) => ipcRenderer.invoke('get-scan-estimate', mode, target)
+    /**
+     * Runs a DefenderScanner script.
+     * mode: 'update'|'quick'|'full'|'folder'|'realtime-on'|'realtime-off'
+     * target: optional folder path
+     */
+    run: (mode, target) => ipcRenderer.invoke('defender-run', mode, target)
 });
-
 
 
 contextBridge.exposeInMainWorld('cleanupBridge', {
@@ -45,3 +41,4 @@ console.log(
     'upgradeAll →',
     typeof window.updateAPI?.upgradeAll
 );
+

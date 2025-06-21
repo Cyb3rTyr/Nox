@@ -52,26 +52,27 @@ document.addEventListener('DOMContentLoaded', () => {
 // Navigation & page switching
 // renderer.js
 
-// renderer.js
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
         const page = btn.dataset.page;
         if (!page) return;
 
-        // Toggle selected state
+        // Deselect all nav buttons
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
 
-        // Show the right page
+        // Deactivate all pages, activate selected
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         const pageEl = document.getElementById(page);
         if (pageEl) pageEl.classList.add('active');
 
-        // Page-specific init
+
+        // page‐specific init:
         if (page === 'system-health') {
             const module = await import('./pages/system_health.js');
             module.systemHealthInit();
         }
+
         else if (page === 'home') {
             initHomeDashboard();
         }
@@ -80,6 +81,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
             m.init();
         }
         else if (page === 'system-cleanup') {
+            // ← THIS IS THE NEW PART:
             const m = await import('./pages/systemCleanup.js');
             m.init();
         }
@@ -249,6 +251,88 @@ function initHomeDashboard() {
 
 // fire on first load
 document.addEventListener('DOMContentLoaded', initHomeDashboard);
+
+
+// renderer.js
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        const page = btn.dataset.page;
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(page).classList.add('active');
+        if (page === 'malware-defense') {
+            const mod = await import('./pages/malwareDefense.js');
+            mod.init();
+        }
+        // …other pages…
+    });
+});
+
+
+// renderer.js
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        // existing logic...
+        if (page === 'system-cleanup') {
+            const module = await import('./pages/systemCleanup.js');
+            module.init();
+
+            // ← add the snippet HERE
+            const scanBtn = document.getElementById('sc-scan');
+            const modal = document.getElementById('scan-modal');
+            const closeBtn = document.getElementById('modal-close');
+            const progressCt = document.getElementById('modal-progress-container');
+            const progressBar = document.getElementById('modal-progress-bar');
+            const results = document.getElementById('modal-results');
+
+            // Listen for progress updates
+            ipcRenderer.on('cleanup-progress', (_e, pct) => {
+                progCt.classList.remove('hidden');
+                progBar.style.width = pct + '%';
+            });
+
+            scanBtn.addEventListener('click', async () => {
+                // get your button by its ID from index.html:
+                const cleanOldUpdatesBtn = document.getElementById('sc-clean-old-updates');
+
+                cleanOldUpdatesBtn.addEventListener('click', async () => {
+                    modal.classList.remove('hidden');
+                    progressCt.classList.remove('hidden');
+                    results.textContent = '';
+
+                    try {
+                        // invoke the same IPC channel, but passing your new action:
+                        const out = await window.cleanupBridge.run('cleanOldUpdates');
+                        results.textContent = out.trim();
+                    } catch (err) {
+                        results.textContent = 'Error: ' + err.message;
+                    } finally {
+                        progressCt.classList.add('hidden');
+                    }
+                });
+
+                modal.classList.remove('hidden');
+                progressCt.classList.remove('hidden');
+                results.textContent = '';
+
+                try {
+                    const out = await window.cleanupBridge.run('scan');
+                    results.textContent = out.trim();
+                } catch (err) {
+                    results.textContent = 'Error: ' + err.message;
+                } finally {
+                    progressCt.classList.add('hidden');
+                }
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
+        }
+    });
+});
 
 
 document.getElementById('ms-info')?.addEventListener('click', () => {
