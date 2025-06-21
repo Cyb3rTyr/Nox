@@ -1457,3 +1457,94 @@ social-links img:hover {
 .controls .action:active img {
     transform: scale(0.95);
 }
+
+/* ─── Base Card ───────────────────────────────────────────────── */
+.card {
+    background: transparent;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    margin: 40px auto;
+    color: #c5e2df;
+}
+
+/* ─── Scanner Bar ─────────────────────────────────────────────── */
+.scanner-bar {
+    display: flex;
+    gap: 0;
+}
+
+.scanner-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px 0 0 8px;
+    background: transparent;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: box-shadow 0.2s;
+}
+
+.scanner-input:focus {
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.7);
+}
+
+.scanner-btn {
+    border-radius: 0 8px 8px 0;
+}
+
+/* reuse your .action hover/bg from existing styles */
+.action {
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.action:hover:not(:disabled) {
+    background: transparent;
+}
+
+.action:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+/* ─── Spinner ────────────────────────────────────────────────── */
+.spinner {
+    display: inline-block;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ─── Inline Result ───────────────────────────────────────────── */
+.scanner-result {
+    margin-top: 20px;
+    padding: 16px;
+    background: transparent;
+    border-radius: 6px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.hidden {
+    display: none;
+}

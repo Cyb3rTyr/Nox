@@ -380,47 +380,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Scanner: trigger scan on Enter key and show modal with loading/result
+// Scanner: inline result rendering
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('scanner-url-input');
     const button = document.getElementById('scanner-scan-btn');
-    const modal = document.getElementById('scanner-modal');
-    const modalBody = document.getElementById('scanner-modal-body');
-    const closeBtn = modal?.querySelector('.close');
+    const resultBox = document.getElementById('scanner-result');
 
-    if (input && button && modal && modalBody && closeBtn) {
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') button.click();
-        });
-
-        button.addEventListener('click', async () => {
-            const url = input.value;
-            if (!url) return;
-            // Show modal and loading
-            modal.classList.remove('hidden');
-            closeBtn.style.display = 'none'; // Hide close button
-            modalBody.innerHTML = `<div style="text-align:center;padding:2em;"><span class="loader"></span><br>Scanning...</div>`;
-            try {
-                const result = await window.urlScanner.scan(url);
-                console.log('Scan result:', result); // Debug log
-                modalBody.innerHTML = `<pre>${result}</pre>`;
-            } catch (err) {
-                console.error('Scan error:', err); // Debug log
-                modalBody.innerHTML = `<p style="color:tomato">Error: ${err}</p>`;
-            }
-            closeBtn.style.display = 'block'; // Show close button after scan
-            input.value = ''; // Clear the input after scan completes
-        });
-
-        closeBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
-
-        // Do NOT close scanner modal by clicking outside
-        // (leave this block commented out)
-        // modal.addEventListener('mousedown', (e) => {
-        //     if (e.target === modal) {
-        //         modal.classList.add('hidden');
-        //     }
-        // });
+    function setDisabled(state) {
+        input.disabled = state;
+        button.disabled = state;
     }
+
+    async function doScan() {
+        const url = input.value.trim();
+        if (!url) return;
+
+        // 1) disable input & button
+        setDisabled(true);
+
+        // 2) show loader
+        resultBox.classList.remove('hidden');
+        resultBox.innerHTML = `<div style="text-align:center"><span class="spinner"></span> Scanning...</div>`;
+
+        try {
+            // 3) perform the scan
+            const result = await window.urlScanner.scan(url);
+
+            // 4) render the plain-text result
+            resultBox.textContent = result;
+        } catch (err) {
+            resultBox.innerHTML = `<span style="color:tomato">Error: ${err}</span>`;
+        } finally {
+            // 5) re-enable controls
+            setDisabled(false);
+            input.value = '';
+        }
+    }
+
+    // click handler
+    button.addEventListener('click', doScan);
+
+    // Enter key
+    input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !button.disabled) {
+            doScan();
+        }
+    });
 });
