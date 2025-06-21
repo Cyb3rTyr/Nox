@@ -1541,10 +1541,118 @@ social-links img:hover {
     font-family: monospace;
     white-space: pre-wrap;
     word-break: break-all;
-    max-height: 300px;
-    overflow-y: auto;
 }
 
 .hidden {
     display: none;
+}
+
+/* ─── Base Layout ───────────────────────────────────────────────── */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    /* only inner result should scroll */
+}
+
+#scanner {
+    position: relative;
+    height: 90vh;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+/* ─── Scanner Bar ───────────────────────────────────────────────── */
+#scanner-bar {
+    height: 60px;
+    /* adjust to your actual bar height */
+    line-height: 60px;
+}
+
+/* ─── Result Pane (hidden-scroll by default) ───────────────────── */
+#scanner-result {
+    position: absolute;
+    top: calc(60px + 20px);
+    /* bar height + top gutter */
+    bottom: 20px;
+    /* bottom gutter */
+    left: 20px;
+    /* left gutter */
+    right: 20px;
+    /* right gutter */
+    box-sizing: border-box;
+    overflow: hidden;
+    /* no scrollbar until we add .has-content */
+}
+
+/* Scroll only when real content is present */
+#scanner-result.has-content {
+    overflow: auto;
+}
+
+/* ─── Result Wrapper ───────────────────────────────────────────── */
+.result-wrapper {
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+/* ─── Modern Table ─────────────────────────────────────────────── */
+.scan-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #2a2a3a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    font-family: inherit;
+    /* use your UI font */
+    table-layout: fixed;
+    /* evenly distribute column widths */
+}
+
+/* Header styling */
+.scan-table th {
+    background: #3a3a4a;
+    color: #e0e0e0;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 12px 16px;
+    text-align: left;
+}
+
+/* Body cells */
+.scan-table td {
+    background: #23232f;
+    color: #c5c5d0;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    word-break: break-word;
+    /* wrap long text/URLs */
+    white-space: normal;
+}
+
+/* Row separators */
+.scan-table tr+tr td {
+    border-top: 1px solid #444;
+}
+
+/* Hover effect */
+.scan-table tbody tr:hover td {
+    background: #2e2e42;
+}
+
+/* Link styling */
+.scan-table td a {
+    color: #66d9ef;
+    text-decoration: none;
+}
+
+.scan-table td a:hover {
+    text-decoration: underline;
 }

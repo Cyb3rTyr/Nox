@@ -218,7 +218,7 @@
 
             <div id="scanner" class="page">
                 <button class="info-btn" data-md="InfoBox\URL_scanner.md" title="More info">ℹ️</button>
-                <div class="scanner-bar">
+                <div id="scanner-bar" class="scanner-bar">
                     <input type="text" id="scanner-url-input" placeholder="Enter URL"
                         style="padding: 8px; width: 60%; margin-right: 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 18px;" />
                     <button id="scanner-scan-btn"
@@ -227,9 +227,10 @@
                     </button>
                 </div>
 
-                <div id="scanner-result" class="scanner-result hidden"></div>
+                <div id="scanner-result" class="scanner-result">
+                    <div class="result-wrapper"><!-- injection point --></div>
+                </div>
             </div>
-
 
             <!-- System Health -->
             <div id="system-health" class="page">

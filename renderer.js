@@ -379,51 +379,107 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// Scanner: trigger scan on Enter key and show modal with loading/result
 // Scanner: inline result rendering
+// main.js (renderer)
+// main.js (renderer)
+// main.js (renderer)
 document.addEventListener('DOMContentLoaded', () => {
+    // 1) grab DOM elements once
+    const bar = document.getElementById('scanner-bar');
     const input = document.getElementById('scanner-url-input');
     const button = document.getElementById('scanner-scan-btn');
     const resultBox = document.getElementById('scanner-result');
+    const wrapper = resultBox.querySelector('.result-wrapper');
 
-    function setDisabled(state) {
-        input.disabled = state;
-        button.disabled = state;
+    console.log('📦 Renderer initialized');
+    console.log(' bar:', bar);
+    console.log(' input:', input);
+    console.log(' button:', button);
+    console.log(' resultBox:', resultBox);
+    console.log(' wrapper:', wrapper);
+
+    function setDisabled(val) {
+        input.disabled = val;
+        button.disabled = val;
+    }
+
+    function sizeResultArea() {
+        if (!bar || !resultBox) return;
+        const bottomOfBar = bar.getBoundingClientRect().bottom;
+        const available = window.innerHeight - bottomOfBar - 20;
+        console.log('↕️ sizeResultArea:', { bottomOfBar, available });
+        resultBox.style.height = `${available}px`;
     }
 
     async function doScan() {
         const url = input.value.trim();
         if (!url) return;
 
-        // 1) disable input & button
         setDisabled(true);
 
-        // 2) show loader
+        // 2) show spinner & size box
         resultBox.classList.remove('hidden');
-        resultBox.innerHTML = `<div style="text-align:center"><span class="spinner"></span> Scanning...</div>`;
+        wrapper.innerHTML = `
+      <div style="text-align:center">
+        <span class="spinner"></span> Scanning…
+      </div>`;
+        sizeResultArea();
 
+        let raw;
         try {
-            // 3) perform the scan
-            const result = await window.urlScanner.scan(url);
-
-            // 4) render the plain-text result
-            resultBox.textContent = result;
+            raw = await window.urlScanner.scan(url);
         } catch (err) {
-            resultBox.innerHTML = `<span style="color:tomato">Error: ${err}</span>`;
-        } finally {
-            // 5) re-enable controls
+            wrapper.innerHTML = `<p style="color:tomato">Scan API error: ${err}</p>`;
+            sizeResultArea();
             setDisabled(false);
-            input.value = '';
+            return;
         }
+
+        // 3) parse JSON
+        let data = null;
+        try { data = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { }
+
+        // 4) build table rows
+        const ok = data?.ok;
+        const rows = [
+            ['Status', ok ? '✅ Secure' : '❌ Not Secure'],
+            ['DNS Resolved', data?.dnsResolved ?? '–'],
+            ['Redirects', data?.redirects?.length ?? '–'],
+            ['Final URL', data?.finalUrl
+                ? `<a href="${data.finalUrl}" target="_blank">${data.finalUrl}</a>`
+                : '–'],
+            ['Status Code', data?.statusCode ?? '–'],
+            ['TLS Used', data?.tls?.used ?? '–'],
+            ['TLS Validated', data?.tls?.validated ?? '–'],
+            ['Issuer', data?.tls?.issuer ?? '–'],
+            ['Valid From', data?.tls?.validFrom ?? '–'],
+            ['Valid To', data?.tls?.validTo ?? '–'],
+            ['Error', data?.error ?? '–']
+        ];
+
+        const tableRowsHtml = rows.map(
+            ([label, value]) => `<tr><th>${label}</th><td>${value}</td></tr>`
+        ).join('');
+
+        // 5) inject table & resize
+        wrapper.innerHTML = `
+      <table class="scan-table">
+        <tbody>
+          ${tableRowsHtml}
+        </tbody>
+      </table>
+    `;
+        sizeResultArea();
+
+        setDisabled(false);
+        input.value = '';
     }
 
-    // click handler
+    // 6) wire it all up once
+    sizeResultArea();
+    window.addEventListener('resize', sizeResultArea);
     button.addEventListener('click', doScan);
-
-    // Enter key
     input.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && !button.disabled) {
-            doScan();
-        }
+        if (e.key === 'Enter' && !button.disabled) doScan();
     });
 });
