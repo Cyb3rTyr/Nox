@@ -1,141 +1,76 @@
+// pages/systemCleanup.js
+
 export function init() {
-  const container = document.getElementById('system-cleanup');
-  container.innerHTML = `
-    <!-- ─── HEADER + INFO BUTTON ─────────────────────────── -->
-    <div class="cleanup-header">
-      <div class="header-text">
-        <h1>🧹 System Cleanup</h1>
-        <p>Free up disk space and improve performance by cleaning junk files.</p>
-      </div>
-      <button id="sc-info" class="info-btn" title="About System Cleanup">ℹ️</button>
-    </div>
-
-    <!-- ─── ACTION CONTROLS ───────────────────────────────── -->
-    <div class="controls">
-      <button id="sc-scan"     class="action">Scan</button>
-      <button id="sc-cleanAll" class="action">Clean All Files</button>
-      <button id="sc-emptyBin" class="action">Empty Recycle Bin</button>
-      <button id="sc-cleanDl"  class="action">Clean Download Folder</button>
-      <button id="sc-cleanTmp" class="action">Clean Temp Folders</button>
-    </div>
-
-    <!-- ─── EXISTING RESULTS MODAL ───────────────────────── -->
-    <div id="sc-modal" class="modal hidden">
-      <div class="modal-content">
-        <button id="sc-modal-close" class="modal-close">&times;</button>
-        <h2 id="sc-modal-title">Working…</h2>
-        <div id="sc-modal-progress-container" class="modal-progress-container hidden">
-          <div id="sc-modal-progress-bar" class="modal-progress-bar"></div>
-        </div>
-        <pre id="sc-modal-output"></pre>
-        <button id="sc-modal-cancel" class="modal-cancel">Cancel</button>
-      </div>
-    </div>
-
-    <!-- ─── INFO POPUP MODAL ─────────────────────────────── -->
-    <div id="sc-info-modal" class="info-modal">
-      <div class="info-modal-content">
-        <button class="close" title="Close">&times;</button>
-        <div id="sc-info-text"></div> <!-- changed from <pre> to <div> -->
-      </div>
-    </div>
-  `;
-
-  // grab the elements
-  const btnInfo = document.getElementById('sc-info');
-  const infoModal = document.getElementById('sc-info-modal');
-  const infoText = document.getElementById('sc-info-text');
-  const infoClose = infoModal.querySelector('.close');
-
-  btnInfo.addEventListener('click', () => {
-    fetch('InfoBox/systemCleanUp.md') // fetch the markdown file
-      .then(r => r.ok ? r.text() : Promise.reject(r.status))
-      .then(md => {
-        // Use a markdown parser like marked (make sure it's loaded in your project)
-        infoText.innerHTML = window.marked ? window.marked.parse(md) : md;
-        infoModal.classList.add('visible');
-      })
-      .catch(() => {
-        infoText.textContent = 'Failed to load info.';
-        infoModal.classList.add('visible');
-      });
-  });
-
-  infoClose.addEventListener('click', () => {
-    infoModal.classList.remove('visible');
-  });
-
-  // close if you click outside the content box
-  infoModal.addEventListener('click', e => {
-    if (e.target === infoModal) {
-      infoModal.classList.remove('visible');
-    }
-  });
-
-
+  // grab buttons
   const btns = {
     scan: document.getElementById('sc-scan'),
-    cleanAll: document.getElementById('sc-cleanAll'),
-    emptyBin: document.getElementById('sc-emptyBin'),
-    cleanDl: document.getElementById('sc-cleanDl'),
-    cleanTmp: document.getElementById('sc-cleanTmp'),
+    cleanAll: document.getElementById('sc-clean-all'),
+    cleanOldUpdates: document.getElementById('sc-clean-old-updates'),
+    cleanDownloads: document.getElementById('sc-clean-downloads'),
+    cleanTemp: document.getElementById('sc-clean-temp'),
   };
-  const modal = document.getElementById('sc-modal');
-  const titleEl = document.getElementById('sc-modal-title');
-  const progCt = document.getElementById('sc-modal-progress-container');
-  const progBar = document.getElementById('sc-modal-progress-bar');
-  const outputEl = document.getElementById('sc-modal-output');
-  const btnCancel = document.getElementById('sc-modal-cancel');
-  const btnClose = document.getElementById('sc-modal-close');
 
-  const cleanup = window.cleanupBridge;
+  // grab output elements
+  const outputEl = document.getElementById('sc-output');
+  const progressCt = document.getElementById('sc-progress');
+  const progressBarInner = document.getElementById('sc-progress-bar');
+  const messagesCt = document.getElementById('sc-messages');
 
-  // Close & Cancel handlers
-  btnClose.addEventListener('click', () => modal.classList.add('hidden'));
-  btnCancel.addEventListener('click', () => {
-    btnCancel.disabled = true;
-    cleanup.cancel?.();
-  });
-
-  // Listen for progress events
-  cleanup.onProgress(pct => {
-    progCt.classList.remove('hidden');
-    progBar.style.width = pct + '%';
-  });
-
-  // Core runner
-  async function run(action, label) {
-    Object.values(btns).forEach(b => b.disabled = true);
-
-    titleEl.textContent = label;
-    outputEl.textContent = '';
-    progBar.style.width = '0%';
-    progCt.classList.remove('hidden');
-    btnCancel.disabled = false;
-    btnCancel.style.display = 'inline-block';
-    btnClose.style.display = 'none';
-    modal.classList.remove('hidden');
-
-    try {
-      const result = await cleanup.run(action);
-      outputEl.textContent = result.trim();
-    } catch (err) {
-      outputEl.textContent =
-        err.message === 'Canceled by user'
-          ? '⚠️ Operation canceled.'
-          : `❌ Error: ${err.message}`;
-    } finally {
-      progCt.classList.add('hidden');
-      btnCancel.style.display = 'none';
-      btnClose.style.display = 'inline-block';
-      Object.values(btns).forEach(b => b.disabled = false);
-    }
+  // helper: clear previous run
+  function clearOutput() {
+    messagesCt.innerHTML = '';
+    progressBarInner.style.width = '0%';
+    progressCt.classList.add('hidden');
+  }
+  // helper: show a colored message
+  function addMessage(type, text) {
+    const div = document.createElement('div');
+    div.className = `message ${type}`;
+    div.textContent = text;
+    messagesCt.appendChild(div);
+    outputEl.classList.remove('hidden');
   }
 
-  // Button bindings
-  btns.scan.addEventListener('click', () => run('scan', 'Scanning for junk…'));
-  btns.cleanAll.addEventListener('click', () => run('cleanAll', 'Cleaning everything…'));
-  btns.emptyBin.addEventListener('click', () => run('emptyRecycleBin', 'Emptying Recycle Bin…'));
-  btns.cleanDl.addEventListener('click', () => run('cleanDownloads', 'Emptying Downloads…'));
-  btns.cleanTmp.addEventListener('click', () => run('cleanTemp', 'Cleaning Temp…'));
+  // wire up progress events
+  if (window.cleanupBridge.onProgress) {
+    window.cleanupBridge.onProgress(pct => {
+      progressCt.classList.remove('hidden');
+      progressBarInner.style.width = `${pct}%`;
+    });
+  }
+
+  // factory for each action
+  function makeHandler(action, friendlyName) {
+    return async () => {
+      clearOutput();
+      addMessage('info', `Starting: ${friendlyName}…`);
+      try {
+        const raw = await window.cleanupBridge.run(action);
+        addMessage('success', `${friendlyName} complete.`);
+        if (raw && raw.trim()) {
+          // show script output as an info block
+          addMessage('info', raw.trim());
+        }
+      } catch (err) {
+        addMessage('error', `Error during ${friendlyName}: ${err.message}`);
+      }
+    };
+  }
+
+  // attach click handlers
+  Object.entries(btns).forEach(([action, btn]) => {
+    if (!btn) return;
+    // derive a human-friendly label
+    const labels = {
+      scan: 'Scan',
+      cleanAll: 'Clean All Files',
+      cleanOldUpdates: 'Clean Old Updates',
+      cleanDownloads: 'Clean Download Folder',
+      cleanTemp: 'Clean Temp Folder',
+    };
+    const handler = makeHandler(action, labels[action] || action);
+    btn.removeEventListener('click', btn._listener);
+    btn.addEventListener('click', handler);
+    btn._listener = handler;
+  });
 }

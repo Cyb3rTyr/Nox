@@ -176,7 +176,18 @@
                     <button id="sc-clean-downloads" class="action">Clean Download Folder</button>
                     <button id="sc-clean-temp" class="action">Clean Temp Folder</button>
                 </div>
+
+                <!-- ↓ replace your old single <div id="sc-output"> with this -->
+                <div id="sc-output" class="output hidden">
+                    <!-- progress bar (hidden until progress starts) -->
+                    <div id="sc-progress" class="progress hidden">
+                        <div id="sc-progress-bar" class="progress-bar-inner"></div>
+                    </div>
+                    <!-- text messages go here -->
+                    <div id="sc-messages" class="messages"></div>
+                </div>
             </div>
+
 
 
             <div id="scanner" class="page">

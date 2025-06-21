@@ -1283,3 +1283,52 @@ social-links img:hover {
 .scan-btn span {
     display: none !important;
 }
+
+/* container under buttons */
+#sc-output {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: sans-serif;
+}
+
+/* hide/show utility */
+.hidden {
+    display: none;
+}
+
+/* PROGRESS BAR */
+#sc-progress {
+    width: 100%;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 12px;
+    margin-bottom: 1rem;
+}
+
+.progress-bar-inner {
+    width: 0%;
+    height: 100%;
+    background: #4caf50;
+    transition: width 0.3s ease;
+}
+
+/* MESSAGES */
+.messages .message {
+    margin-bottom: 0.5rem;
+}
+
+.message.info {
+    color: #2196f3;
+}
+
+.message.success {
+    color: #4caf50;
+}
+
+.message.error {
+    color: #f44336;
+}

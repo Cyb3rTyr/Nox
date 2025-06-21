@@ -305,81 +305,32 @@ document.addEventListener('DOMContentLoaded', initHomeDashboard);
 // renderer.js
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('selected'));
+        console.log('[nav] clicked →', btn.dataset.page);
+
+        // 1) Toggle selected nav item
+        document.querySelectorAll('.nav-btn')
+            .forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
+
+        // 2) Show that page
         const page = btn.dataset.page;
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.page')
+            .forEach(p => p.classList.remove('active'));
         document.getElementById(page).classList.add('active');
+
+        // 3) Load & init the right module
         if (page === 'malware-defense') {
+            console.log('[nav] loading malwareDefense.js');
             const mod = await import('./pages/malwareDefense.js');
             mod.init();
         }
-        // …other pages…
-    });
-});
-
-
-// renderer.js
-document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-        // existing logic...
-        if (page === 'system-cleanup') {
-            const module = await import('./pages/systemCleanup.js');
-            module.init();
-
-            // ← add the snippet HERE
-            const scanBtn = document.getElementById('sc-scan');
-            const modal = document.getElementById('scan-modal');
-            const closeBtn = document.getElementById('modal-close');
-            const progressCt = document.getElementById('modal-progress-container');
-            const progressBar = document.getElementById('modal-progress-bar');
-            const results = document.getElementById('modal-results');
-
-            // Listen for progress updates
-            ipcRenderer.on('cleanup-progress', (_e, pct) => {
-                progCt.classList.remove('hidden');
-                progBar.style.width = pct + '%';
-            });
-
-            scanBtn.addEventListener('click', async () => {
-                // get your button by its ID from index.html:
-                const cleanOldUpdatesBtn = document.getElementById('sc-clean-old-updates');
-
-                cleanOldUpdatesBtn.addEventListener('click', async () => {
-                    modal.classList.remove('hidden');
-                    progressCt.classList.remove('hidden');
-                    results.textContent = '';
-
-                    try {
-                        // invoke the same IPC channel, but passing your new action:
-                        const out = await window.cleanupBridge.run('cleanOldUpdates');
-                        results.textContent = out.trim();
-                    } catch (err) {
-                        results.textContent = 'Error: ' + err.message;
-                    } finally {
-                        progressCt.classList.add('hidden');
-                    }
-                });
-
-                modal.classList.remove('hidden');
-                progressCt.classList.remove('hidden');
-                results.textContent = '';
-
-                try {
-                    const out = await window.cleanupBridge.run('scan');
-                    results.textContent = out.trim();
-                } catch (err) {
-                    results.textContent = 'Error: ' + err.message;
-                } finally {
-                    progressCt.classList.add('hidden');
-                }
-            });
-
-            closeBtn.addEventListener('click', () => {
-                modal.classList.add('hidden');
-            });
-
+        // … any other pages you already had …
+        else if (page === 'system-cleanup') {
+            console.log('[nav] loading systemCleanup.js');
+            const mod = await import('./pages/systemCleanup.js');
+            mod.init();
         }
+        // … further pages …
     });
 });
 
