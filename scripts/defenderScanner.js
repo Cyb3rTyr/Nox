@@ -38,8 +38,8 @@ function runCommand(psCommand) {
             if (!target) return console.error('❗ Specify folder path');
             const safe = target.replace(/'/g, "''");
             await runCommand(`Start-MpScan -ScanPath '${safe}' -ScanType CustomScan`);
-            res = await runCommand('Get-MpThreatDetection | Select-Object ThreatName, Severity, ActionSuccess | ConvertTo-Json -Depth 3');
-
+            await new Promise(r => setTimeout(r, 1500)); // give time for Defender to log threat
+            res = await runCommand('Get-MpThreatDetection | Sort-Object InitialDetectionTime -Descending | Select-Object -First 5 | ConvertTo-Json -Depth 3');
             break;
 
         default:
