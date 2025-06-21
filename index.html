@@ -179,12 +179,24 @@
 
                 <!-- ↓ replace your old single <div id="sc-output"> with this -->
                 <div id="sc-output" class="output hidden">
-                    <!-- progress bar (hidden until progress starts) -->
+                    <!-- progress bar -->
                     <div id="sc-progress" class="progress hidden">
                         <div id="sc-progress-bar" class="progress-bar-inner"></div>
                     </div>
-                    <!-- text messages go here -->
-                    <div id="sc-messages" class="messages"></div>
+
+                    <!-- status messages -->
+                    <div id="sc-status" class="messages"></div>
+
+                    <!-- detailed results table -->
+                    <div id="sc-detail" class="detail hidden">
+                        <table id="sc-detail-table">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <!-- summary totals -->
+                    <div id="sc-summary" class="summary hidden"></div>
                 </div>
             </div>
 

@@ -1,7 +1,7 @@
 // pages/systemCleanup.js
 
 export function init() {
-  // grab buttons
+  // 1) grab all controls
   const btns = {
     scan: document.getElementById('sc-scan'),
     cleanAll: document.getElementById('sc-clean-all'),
@@ -9,67 +9,119 @@ export function init() {
     cleanDownloads: document.getElementById('sc-clean-downloads'),
     cleanTemp: document.getElementById('sc-clean-temp'),
   };
-
-  // grab output elements
   const outputEl = document.getElementById('sc-output');
   const progressCt = document.getElementById('sc-progress');
-  const progressBarInner = document.getElementById('sc-progress-bar');
-  const messagesCt = document.getElementById('sc-messages');
+  const progressBar = document.getElementById('sc-progress-bar');
+  const statusCt = document.getElementById('sc-status');
+  const detailCt = document.getElementById('sc-detail');
+  const detailTbl = document.getElementById('sc-detail-table');
+  const summaryCt = document.getElementById('sc-summary');
 
-  // helper: clear previous run
+  // 2) helpers
   function clearOutput() {
-    messagesCt.innerHTML = '';
-    progressBarInner.style.width = '0%';
-    progressCt.classList.add('hidden');
+    statusCt.innerHTML = '';
+    progressBar.style.width = '0';
+    detailTbl.querySelector('thead').innerHTML = '';
+    detailTbl.querySelector('tbody').innerHTML = '';
+    summaryCt.textContent = '';
+    [progressCt, detailCt, summaryCt].forEach(el => el.classList.add('hidden'));
+    outputEl.classList.remove('hidden');
   }
-  // helper: show a colored message
-  function addMessage(type, text) {
+  function addStatus(type, text) {
     const div = document.createElement('div');
-    div.className = `message ${type}`;
+    div.className = type;
     div.textContent = text;
-    messagesCt.appendChild(div);
+    statusCt.appendChild(div);
     outputEl.classList.remove('hidden');
   }
 
-  // wire up progress events
+  // 3) progress hook
   if (window.cleanupBridge.onProgress) {
     window.cleanupBridge.onProgress(pct => {
       progressCt.classList.remove('hidden');
-      progressBarInner.style.width = `${pct}%`;
+      progressBar.style.width = `${pct}%`;
     });
   }
 
-  // factory for each action
-  function makeHandler(action, friendlyName) {
+  // 4) parse & render the raw script output
+  function renderDetail(raw) {
+    const lines = raw.trim().split(/\r?\n/);
+    // find the table header
+    const hdrIdx = lines.findIndex(l => /^Folder\s+/.test(l));
+    if (hdrIdx < 0) return;
+
+    // split header columns by 2+ spaces
+    const headers = lines[hdrIdx].trim().split(/\s{2,}/);
+
+    // find data rows (skip underline & stop at blank or “Total”)
+    const dataRows = [];
+    for (let i = hdrIdx + 2; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line || /^Total:/.test(line)) break;
+      dataRows.push(line.split(/\s{2,}/));
+    }
+
+    // build <thead>
+    const thead = detailTbl.querySelector('thead');
+    const headRow = document.createElement('tr');
+    headers.forEach(h => {
+      const th = document.createElement('th');
+      th.textContent = h;
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+
+    // build <tbody>
+    const tbody = detailTbl.querySelector('tbody');
+    dataRows.forEach(cols => {
+      const tr = document.createElement('tr');
+      cols.forEach(c => {
+        const td = document.createElement('td');
+        td.textContent = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+
+    detailCt.classList.remove('hidden');
+
+    // extract “Total: X files, Y folders”
+    const totalLine = lines.find(l => /^Total:/.test(l));
+    if (totalLine) {
+      summaryCt.textContent = totalLine.replace(/^Total:\s*/, '');
+      summaryCt.classList.remove('hidden');
+    }
+  }
+
+  // 5) click-handler factory
+  function makeHandler(action, label) {
     return async () => {
       clearOutput();
-      addMessage('info', `Starting: ${friendlyName}…`);
+      addStatus('info', `Starting ${label}…`);
       try {
         const raw = await window.cleanupBridge.run(action);
-        addMessage('success', `${friendlyName} complete.`);
+        addStatus('success', `${label} complete.`);
         if (raw && raw.trim()) {
-          // show script output as an info block
-          addMessage('info', raw.trim());
+          renderDetail(raw);
         }
       } catch (err) {
-        addMessage('error', `Error during ${friendlyName}: ${err.message}`);
+        addStatus('error', `Error during ${label}: ${err.message}`);
       }
     };
   }
 
-  // attach click handlers
+  // 6) wire buttons
+  const labels = {
+    scan: 'Scan',
+    cleanAll: 'Clean All Files',
+    cleanOldUpdates: 'Clean Old Updates',
+    cleanDownloads: 'Clean Download Folder',
+    cleanTemp: 'Clean Temp Folder',
+  };
   Object.entries(btns).forEach(([action, btn]) => {
     if (!btn) return;
-    // derive a human-friendly label
-    const labels = {
-      scan: 'Scan',
-      cleanAll: 'Clean All Files',
-      cleanOldUpdates: 'Clean Old Updates',
-      cleanDownloads: 'Clean Download Folder',
-      cleanTemp: 'Clean Temp Folder',
-    };
-    const handler = makeHandler(action, labels[action] || action);
-    btn.removeEventListener('click', btn._listener);
+    if (btn._listener) btn.removeEventListener('click', btn._listener);
+    const handler = makeHandler(action, labels[action]);
     btn.addEventListener('click', handler);
     btn._listener = handler;
   });

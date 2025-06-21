@@ -1332,3 +1332,99 @@ social-links img:hover {
 .message.error {
     color: #f44336;
 }
+
+/* HIDE/SHOW */
+.hidden {
+    display: none;
+}
+
+#sc-output:not(.hidden) {
+    display: block;
+}
+
+/* OUTPUT CONTAINER */
+#sc-output {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: sans-serif;
+}
+
+/* PROGRESS BAR */
+#sc-progress {
+    width: 100%;
+    background: transparent;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 12px;
+    margin-bottom: 1rem;
+}
+
+.progress-bar-inner {
+    width: 0;
+    height: 100%;
+    background: #4caf50;
+    transition: width 0.3s ease;
+}
+
+/* STATUS MESSAGES */
+.messages {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.messages .info {
+    color: #2196f3;
+}
+
+.messages .success {
+    color: #4caf50;
+}
+
+.messages .error {
+    color: #f44336;
+}
+
+/* DETAIL TABLE */
+.detail {
+    margin-bottom: 1rem;
+}
+
+#sc-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+#sc-detail-table th,
+#sc-detail-table td {
+    padding: 0.5rem;
+    border: 1px solid transparent;
+}
+
+#sc-detail-table th {
+    background: transparent;
+}
+
+#sc-detail-table tbody tr:nth-child(odd) {
+    background: transparent;
+}
+
+/* SUMMARY */
+.summary {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #f2f2f2;
+    padding-top: 0.5rem;
+}
+
+/* SHOW/HIDE */
+.hidden {
+    display: none;
+}
+
+#sc-output:not(.hidden) {
+    display: block;
+}
