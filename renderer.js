@@ -52,39 +52,84 @@ document.addEventListener('DOMContentLoaded', () => {
 // Navigation & page switching
 // renderer.js
 
-document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-        const page = btn.dataset.page;
-        if (!page) return;
+document.addEventListener('DOMContentLoaded', () => {
+    const quickBtn = document.getElementById('md-quick');
+    const fullBtn = document.getElementById('md-full');
+    const folderBtn = document.getElementById('md-folder-btn');
+    const folderInput = document.getElementById('md-folder-input');
+    const output = document.getElementById('md-output');
+    const loader = document.getElementById('md-loader');
+    const status = document.getElementById('md-status');
+    const saveBtn = document.getElementById('md-save');
 
-        // Deselect all nav buttons
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
+    const updateStatus = (msg) => {
+        const time = new Date().toLocaleTimeString();
+        status.textContent = `[${time}] ${msg}`;
+    };
 
-        // Deactivate all pages, activate selected
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        const pageEl = document.getElementById(page);
-        if (pageEl) pageEl.classList.add('active');
+    const runScan = async (mode, target = null) => {
+        loader.classList.remove('hidden');
+        loader.textContent = '';
+        output.textContent = '';
+        updateStatus(`Running ${mode} scan...`);
+        saveBtn.disabled = true;
 
+        try {
+            const result = await window.defenderAPI.run(mode, target);
+            loader.classList.add('hidden');
+            loader.textContent = '✅';
+            updateStatus(`${mode} scan complete.`);
+            saveBtn.disabled = false;
 
-        // page‐specific init:
-        if (page === 'system-health') {
-            const module = await import('./pages/system_health.js');
-            module.systemHealthInit();
+            // TRY TO PARSE JSON THREAT DATA
+            let threats;
+            try {
+                threats = JSON.parse(result);
+            } catch {
+                output.innerHTML = `<div class="no-threats">✅ Scan complete, no threat data available.</div>`;
+                return;
+            }
+
+            // DISPLAY THREATS VISUALLY
+            if (Array.isArray(threats) && threats.length > 0) {
+                output.innerHTML = threats.map(t => `
+                <div class="threat-box">
+                    <strong>${t.ThreatName}</strong><br>
+                    Severity: <span class="sev">${t.Severity}</span><br>
+                    Action Success: ${t.ActionSuccess ? '✅' : '❌'}
+                </div>
+            `).join('');
+            } else {
+                output.innerHTML = `<div class="no-threats">✅ No active threats detected.</div>`;
+            }
+
+        } catch (err) {
+            loader.classList.add('hidden');
+            loader.textContent = '❌';
+            output.innerHTML = `<span style="color:tomato;">❌ Scan failed:</span>\n` + err.message;
+            updateStatus(`${mode} scan failed.`);
         }
+    };
 
-        else if (page === 'home') {
-            initHomeDashboard();
+
+    quickBtn?.addEventListener('click', () => runScan('quick'));
+    fullBtn?.addEventListener('click', () => runScan('full'));
+    folderBtn?.addEventListener('click', () => folderInput?.click());
+    folderInput?.addEventListener('change', () => {
+        const files = folderInput.files;
+        if (files.length > 0) {
+            const folderPath = files[0].path;
+            runScan('folder', folderPath);
         }
-        else if (page === 'malware-defense') {
-            const m = await import('./pages/malwareDefense.js');
-            m.init();
-        }
-        else if (page === 'system-cleanup') {
-            // ← THIS IS THE NEW PART:
-            const m = await import('./pages/systemCleanup.js');
-            m.init();
-        }
+    });
+
+    saveBtn?.addEventListener('click', () => {
+        const blob = new Blob([output.textContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `defender-scan-${Date.now()}.txt`;
+        a.click();
     });
 });
 

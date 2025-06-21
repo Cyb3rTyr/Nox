@@ -16,29 +16,37 @@ function runCommand(psCommand) {
 (async () => {
     const [, , mode, target] = process.argv;
 
-    // Ensure real-time ON before scans
+    // Always re-enable real-time protection before scan
     await runCommand('Set-MpPreference -DisableRealtimeMonitoring $false').catch(() => { });
 
     let res = '';
     switch (mode) {
-        case 'update': res = await runCommand('Update-MpSignature'); break;
-        case 'quick': res = await runCommand('Start-MpScan -ScanType QuickScan'); break;
-        case 'full': res = await runCommand('Start-MpScan -ScanType FullScan'); break;
+
+        case 'quick':
+            await runCommand('Start-MpScan -ScanType QuickScan');
+            res = await runCommand('Get-MpThreatDetection | Select-Object ThreatName, Severity, ActionSuccess | ConvertTo-Json -Depth 3');
+
+            break;
+
+        case 'full':
+            await runCommand('Start-MpScan -ScanType FullScan');
+            res = await runCommand('Get-MpThreatDetection | Select-Object ThreatName, Severity, ActionSuccess | ConvertTo-Json -Depth 3');
+
+            break;
+
         case 'folder':
             if (!target) return console.error('❗ Specify folder path');
             const safe = target.replace(/'/g, "''");
-            res = await runCommand(`Start-MpScan -ScanPath '${safe}' -ScanType CustomScan`);
+            await runCommand(`Start-MpScan -ScanPath '${safe}' -ScanType CustomScan`);
+            res = await runCommand('Get-MpThreatDetection | Select-Object ThreatName, Severity, ActionSuccess | ConvertTo-Json -Depth 3');
+
             break;
-        case 'realtime-off':
-            res = await runCommand('Set-MpPreference -DisableRealtimeMonitoring $true');
-            break;
-        case 'realtime-on':
-            res = await runCommand('Set-MpPreference -DisableRealtimeMonitoring $false');
-            break;
+
         default:
             return console.log(`
 Usage: node defenderScanner.js <update|quick|full|folder|realtime-on|realtime-off> [path]
 `);
     }
+
     console.log(res);
 })();

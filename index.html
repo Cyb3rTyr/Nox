@@ -139,14 +139,15 @@
                     <button id="md-full" class="action">Full Scan</button>
                     <button id="md-folder-btn" class="action">Scan Folder…</button>
                     <input id="md-folder-input" type="file" webkitdirectory directory style="display:none" />
-                    <!-- loader next to buttons -->
                     <div id="md-loader" class="loader hidden"></div>
                 </div>
-                <!-- Empty-state placeholder -->
-                <div id="md-empty" class="empty-state">
-                    <img src="icons/scann_friend.png" alt="No scans yet" />
-                </div>
+
+
+                <!-- This will show log output -->
                 <div id="md-output" class="health-log"></div>
+
+                <!-- Add this under #md-output if you want it pre-existing -->
+                <p id="md-status" style="margin-top:10px; font-style: italic;"></p>
             </div>
 
 

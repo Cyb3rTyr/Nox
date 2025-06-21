@@ -1200,3 +1200,48 @@ social-links img:hover {
         grid-template-columns: 1fr;
     }
 }
+
+#md-output {
+    background: transparent;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 12px;
+    white-space: pre-wrap;
+    font-family: monospace;
+}
+
+.threat-box {
+    background: #181829;
+    border-left: 4px solid #BC13FE;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    font-family: 'Rubik', sans-serif;
+    color: #eee;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.sev {
+    font-weight: bold;
+    color: gold;
+}
+
+.no-threats {
+    background: #1a2b1a;
+    padding: 14px;
+    border-left: 4px solid limegreen;
+    border-radius: 6px;
+    color: #cfc;
+    font-family: 'Rubik', sans-serif;
+    font-size: 1.1rem;
+}
+
+#md-output {
+    margin-top: 20px;
+}
+
+
+
+.hidden {
+    display: none !important;
+}
