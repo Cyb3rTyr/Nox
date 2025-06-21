@@ -68,20 +68,24 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const runScan = async (mode, target = null) => {
+        const loader = document.getElementById('md-loader');
+        const output = document.getElementById('md-output');
+        const status = document.getElementById('md-status');
+        const emptyState = document.getElementById('md-empty');
+        if (emptyState) emptyState.style.display = 'none';
+
         loader.classList.remove('hidden');
         loader.textContent = '';
         output.textContent = '';
-        updateStatus(`Running ${mode} scan...`);
-        saveBtn.disabled = true;
+        const time = new Date().toLocaleTimeString();
+        status.textContent = `[${time}] Running ${mode} scan...`;
 
         try {
             const result = await window.defenderAPI.run(mode, target);
             loader.classList.add('hidden');
             loader.textContent = '✅';
-            updateStatus(`${mode} scan complete.`);
-            saveBtn.disabled = false;
+            status.textContent = `[${new Date().toLocaleTimeString()}] ${mode} scan complete.`;
 
-            // TRY TO PARSE JSON THREAT DATA
             let threats;
             try {
                 threats = JSON.parse(result);
@@ -90,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // DISPLAY THREATS VISUALLY
             if (Array.isArray(threats) && threats.length > 0) {
                 output.innerHTML = threats.map(t => `
                 <div class="threat-box">
@@ -106,10 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             loader.classList.add('hidden');
             loader.textContent = '❌';
-            output.innerHTML = `<span style="color:tomato;">❌ Scan failed:</span>\n` + err.message;
-            updateStatus(`${mode} scan failed.`);
+            output.innerHTML = `<span style="color:tomato;">❌ Scan failed:</span>\n${err.message}`;
+            status.textContent = `[${new Date().toLocaleTimeString()}] Scan failed.`;
         }
     };
+
 
 
     quickBtn?.addEventListener('click', () => runScan('quick'));
