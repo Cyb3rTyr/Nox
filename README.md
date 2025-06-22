@@ -3,39 +3,39 @@
 
 # Nox
 
-**Nox** is a cross-platform (Windows) desktop application built with [Electron](https://www.electronjs.org/) that helps you secure, optimize, and anonymize your system. It features real-time malware defense, system cleanup, file encryption, privacy controls, and a built-in vault for sensitive files.
+**Nox** is a lightweight Windows desktop utility built with Electron. It consolidates essential system maintenance tools in one neat package:
+
+- 🛡️ **Malware Defense**: On-demand and real-time scanning powered by Windows Defender.  
+- 🧹 **System Cleanup**: Clean temporary files, downloads, old updates, and empty the Recycle Bin via PowerShell scripts.  
+- 📊 **System Health Dashboard**: Live CPU, RAM, and disk usage; OS info; uptime, using the `systeminformation` Node module.  
+- 🌐 **URL Scanner**: Quickly check URLs against VirusTotal.  
+- ✉️ **Contact Support**: One-click to open your default mail client or web-mail compose.  
 
 ---
 
-## 🚀 Features
+## 📥 Installation
 
-- **Malware Defense**  
-  As a first-year cybersecurity student without dedicated servers or a custom detection engine (yet), Nox currently leverages Windows Defender via native CLI commands. This gives you real-time monitoring, signature-based and heuristic scans (quick, full, or custom folder), automatic definition updates, quarantine with safe rollback, and customizable exclusion lists — all powered by Defender’s proven engine and without exposing users to complex settings or relying on external servers. Future releases will introduce my own detection algorithms and a standalone malware engine as my skills and resources grow.
+1. **Download the latest installer** from the [Releases page](https://github.com/Cyb3rTyr/Nox/releases).  
+2. Run `Nox-Setup-<version>.exe` and follow the wizard (you can change the install directory).  
+3. Launch **Nox** from the Windows Start Menu.
 
-
-- **System Cleanup**  
-  Scan for and remove junk files, temporary data, and unused applications.
-
-- **Scanner**  
-  Manual on-demand scans with progress indicator.
-
-- **File Encryption**  
-  Encrypt and decrypt files or folders with strong algorithms.
-
-- **Privacy Settings**  
-  Manage browser history, cookies, trackers, and telemetry.
-
-- **System Health**  
-  One-click update/upgrade of system packages via `winget`; live health logs.
-
-- **Vault**  
-  Securely import, organize, and manage sensitive folders and documents.
+> **Note:** If Nox is already running, close it before retrying the installer.
 
 ---
 
-## 🛠️ Prerequisites
+## 🏗️ Development Setup
 
-- **OS:** Windows 10 or later  
-- **Node.js:** v14.x or newer (for building from source)  
-- **npm:** v6.x or newer (for building from source)  
-- **winget:** Windows Package Manager (for updates)
+**Prerequisites:**
+- Node.js v18+ and npm  
+- Git
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/Cyb3rTyr/Nox.git
+cd Nox
+
+# 2. Install dependencies
+npm install
+
+# 3. Run in development mode
+npm start
