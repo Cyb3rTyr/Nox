@@ -1,59 +1,31 @@
-# System Cleanup Guide
+# 🧹 System Cleanup
 
-Welcome to the **System Cleanup** page!  
-
-This guide explains each button’s purpose, so you can confidently free up disk space and keep your PC running smoothly.
+The System Cleanup tool helps you free up disk space by removing temporary, unnecessary, or outdated files.
 
 ---
 
-## 🗑️ Empty Recycle Bin
+### 🧪 Available Actions
 
-**What it does**  
-Permanently deletes everything in the Windows Recycle Bin.
-
-**Why use it**  
-Recycle Bin can hide gigabytes of old files. Emptying it reclaims all that space instantly.
-
----
-
-## 📁 Clean Downloads
-
-**What it does**  
-Removes leftover installers, documents, and other clutter from your Downloads folder.
-
-**Why use it**  
-Downloads tend to pile up over time—this helps you clear out things you no longer need.
+| Action                | Description                                              |
+|------------------------|----------------------------------------------------------|
+| `Scan`                | Analyzes your system for cleanup candidates              |
+| `Clean All Files`     | Executes all cleanup tasks in one go                     |
+| `Clean Recycle Bin`   | Empties the recycle bin                  |
+| `Clean Download Folder` | Removes files from the default Downloads directory     |
+| `Clean Temp Folder`   | Clears temporary system and user files                   |
 
 ---
 
-## 🧹 Clean Temp Files
+### 🔄 How It Works
 
-**What it does**  
-Wipes temporary files, caches, and leftover installer data from your system.
-
-**Why use it**  
-Temp files can slow down your PC and waste disk space; cleaning them can boost performance.
+- Each action runs a PowerShell script behind the scenes.
+- Progress is shown via a modal with a dynamic progress bar.
+- Scan results and logs are displayed after completion.
 
 ---
 
-## 🧼 Clean All
+### ⚠ Notes
 
-**What it does**  
-Runs **Empty Recycle Bin**, **Clean Downloads**, and **Clean Temp Files** in one go.
-
-**Why use it**  
-For a quick, thorough cleanup—no need to press three separate buttons.
-
----
-
-## 🔍 Scan
-
-**What it does**  
-Analyzes your system and reports how much space each cleanup action can free.
-
-**Why use it**  
-Get an overview before you clean. See potential savings and choose the actions you need.
-
----
-
-> **Tip:** Run **Scan** first, then **Clean All** for the fastest full cleanup, or pick individual actions based on your scan results.
+- Deleted files cannot be recovered — use with care.
+- Running the scan first is recommended to preview cleanup size.
+- Some operations may require administrator permissions.
