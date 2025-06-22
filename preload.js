@@ -13,17 +13,12 @@ contextBridge.exposeInMainWorld('defenderAPI', {
 
 
 contextBridge.exposeInMainWorld('cleanupBridge', {
-    // invoke a cleanup action (scan, cleanAll, etc)
-    run: action => ipcRenderer.invoke('cleanup-run', action),
-
-    // allow cancelling mid-scan/cleanup
-    cancel: () => ipcRenderer.invoke('cleanup-cancel'),
-
-    // hook into progress events
-    onProgress: cb => {
-        ipcRenderer.on('cleanup-progress', (_e, pct) => cb(pct));
-    }
+    run: (action) => ipcRenderer.invoke('cleanup-run', action),
+    onProgress: (cb) => ipcRenderer.on('cleanup-progress', (_e, pct) => cb(pct)),
+    onError: (cb) => ipcRenderer.on('cleanup-error', (_e, msg) => cb(msg)),
+    onDone: (cb) => ipcRenderer.on('cleanup-done', (_e, code) => cb(code))
 });
+
 
 contextBridge.exposeInMainWorld('urlScanner', {
     scan: (url) => ipcRenderer.invoke('scan-url', url)

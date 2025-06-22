@@ -14,11 +14,13 @@ body {
     height: 100vh;
 
     background: linear-gradient(to bottom,
-            #000000 0%,
-            /* pure black */
-            #1a0d2d 75%,
-            /* very dark indigo */
-            #3c1361 100%);
+            #0d1117 0%,
+            /* GitHub dark canvas */
+            #161b22 75%,
+            /* slightly deeper dark */
+            #21262d 100%
+            /* dark gray footer background */
+        );
     border-right: 2px solid rgba(0, 0, 0, 0.5);
     border-right: 2px solid rgba(0, 0, 0, 0.5);
 }
@@ -107,11 +109,11 @@ body {
 }
 
 .nav-btn:hover {
-    background: #5e35b143;
+    background-color: #30363d;
 }
 
 .nav-btn.selected {
-    background: #5e35b16d;
+    background-color: #484f58;
     color: #ffffff;
 }
 
@@ -148,11 +150,9 @@ body {
     padding: 20px 30px;
     overflow: auto;
     background: linear-gradient(to bottom,
-            #000000 0%,
-            /* pure black */
-            #1a0d2d 75%,
-            /* very dark indigo */
-            #3c1361 100%);
+            #0d1117 0%,
+            #161b22 75%,
+            #21262d 100%);
     border-right: 2px solid rgba(0, 0, 0, 0.5);
     border-radius: 0 8px 8px 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -1444,8 +1444,8 @@ social-links img:hover {
 
 .controls .action img {
     display: block;
-    width: 200px;
-    height: 200px;
+    width: 12vw;
+    min-width: 150px;
     object-fit: contain;
     transition: transform 0.1s;
 }
@@ -1683,8 +1683,8 @@ body {
 
 
 .info-icon {
-    width: 250px;
-    height: 250px;
+    width: 12vw;
+    min-width: 150px;
     margin-right: 10px;
 }
 

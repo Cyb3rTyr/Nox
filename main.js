@@ -7,9 +7,9 @@ const si = require('systeminformation');
 let mainWindow;
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 1100,
+        width: 1200,
         height: 700,
-        minWidth: 1100,
+        minWidth: 1200,
         minHeight: 700,
         webPreferences: {
             // Restore preload bridge
@@ -68,95 +68,73 @@ ipcMain.handle('defender-run', async (_evt, mode, target) => {
 });
 
 // ── System Cleanup IPC ───────────────────────────────────────────────────────
+
 ipcMain.handle('cleanup-run', (event, action) => {
-    let scriptPath, psArgs;
+    let psArgs;
 
     switch (action) {
         case 'scan':
-            scriptPath = path.join(__dirname, 'scripts', 'systemCleanup.ps1');
+            // call your systemCleanup.ps1 -Scan
             psArgs = [
                 '-NoProfile',
                 '-ExecutionPolicy', 'Bypass',
-                '-File', scriptPath,
-                '-Scan',
-                '-ExportCsv'
+                '-File', path.join(__dirname, 'scripts', 'systemCleanup.ps1'),
+                '-Scan'
             ];
             break;
-        case 'emptyRecycleBin':
-            scriptPath = path.join(__dirname, 'scripts', 'EmptyBin.ps1');
+
+        case 'cleanOldUpdates':
+            // empty the recycle bin
             psArgs = [
                 '-NoProfile',
                 '-ExecutionPolicy', 'Bypass',
-                '-File', scriptPath
+                '-Command', 'Clear-RecycleBin -Force'
             ];
             break;
+
         case 'cleanDownloads':
-            scriptPath = path.join(__dirname, 'scripts', 'test.ps1');
             psArgs = [
                 '-NoProfile',
                 '-ExecutionPolicy', 'Bypass',
-                '-File', scriptPath,
+                '-File', path.join(__dirname, 'scripts', 'systemCleanup.ps1'),
                 '-CleanDownloads'
             ];
             break;
+
         case 'cleanTemp':
-            scriptPath = path.join(__dirname, 'scripts', 'test.ps1');
             psArgs = [
                 '-NoProfile',
                 '-ExecutionPolicy', 'Bypass',
-                '-File', scriptPath,
+                '-File', path.join(__dirname, 'scripts', 'systemCleanup.ps1'),
                 '-CleanTemp'
             ];
             break;
+
         case 'cleanAll':
-            scriptPath = path.join(__dirname, 'scripts', 'test.ps1');
             psArgs = [
                 '-NoProfile',
                 '-ExecutionPolicy', 'Bypass',
-                '-File', scriptPath,
+                '-File', path.join(__dirname, 'scripts', 'systemCleanup.ps1'),
                 '-CleanAll'
             ];
             break;
+
         default:
             throw new Error(`Unknown cleanup action: ${action}`);
     }
 
     return new Promise((resolve, reject) => {
-        const child = spawn('powershell.exe', psArgs, {
-            cwd: __dirname,
-            shell: true
-        });
+        const child = spawn('powershell.exe', psArgs, { shell: true });
         let out = '';
 
-        child.stdout.on('data', chunk => {
-            const text = chunk.toString();
-            // split on newlines so we can handle both PROGRESS and output
-            text.split(/\r?\n/).forEach(line => {
-                if (line.startsWith('PROGRESS:')) {
-                    // send progress (0–100) back to renderer
-                    const pct = parseInt(line.slice('PROGRESS:'.length), 10);
-                    event.sender.send('cleanup-progress', pct);
-                } else if (line.trim() !== '') {
-                    // accumulate any non-progress text
-                    out += line + '\n';
-                }
-            });
-        });
+        child.stdout.on('data', chunk => out += chunk.toString());
+        child.stderr.on('data', chunk => out += chunk.toString());
 
-        child.stderr.on('data', chunk => {
-            const errText = chunk.toString();
-            event.sender.send('cleanup-error', errText);
-            out += errText;
-        });
-
-        child.on('close', code => {
-            event.sender.send('cleanup-done', code);
-            resolve(out);
-        });
-
-        child.on('error', err => reject(err));
+        child.on('close', code => resolve(out.trim()));
+        child.on('error', reject);
     });
 });
+
 
 // ── URL Scanner IPC ───────────────────────────────────────────────────────────
 ipcMain.handle('scan-url', async (_event, url) => {
