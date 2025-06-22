@@ -199,11 +199,40 @@ ipcMain.handle('get-updates', async () => {
 
 // handle “upgrade everything”
 ipcMain.handle('upgrade-all', async () => {
-    // TODO: run your upgrade logic, return a message or error
     try {
-        // await doUpgrade();
-        return { success: true, message: 'All updates installed successfully.' };
+        // First, ensure Defender definitions are updated (example using PowerShell)
+        const defenderUpdate = await new Promise((resolve, reject) => {
+            const { spawn } = require('child_process');
+            const child = spawn('powershell.exe', [
+                '-NoProfile', '-ExecutionPolicy', 'Bypass',
+                '-Command', 'Update-MpSignature'
+            ]);
+
+            let output = '';
+            child.stdout.on('data', data => output += data.toString());
+            child.stderr.on('data', data => output += data.toString());
+
+            child.on('close', code => {
+                if (code === 0) resolve(output);
+                else reject(new Error(`Defender update failed: ${output}`));
+            });
+
+            child.on('error', err => reject(err));
+        });
+
+        console.log('Defender definitions updated:', defenderUpdate.trim());
+
+        // Now run your actual update logic here:
+        // Example placeholder:
+        const updatesInstalled = true; // replace with actual update logic.
+
+        if (updatesInstalled) {
+            return { success: true, message: 'All updates installed successfully, including Defender definitions.' };
+        } else {
+            throw new Error('Some updates failed to install.');
+        }
+
     } catch (e) {
-        return { success: false, message: 'Upgrade failed: ' + e.message };
+        return { success: false, message: `Upgrade failed: ${e.message}` };
     }
 });

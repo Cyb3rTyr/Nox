@@ -234,21 +234,48 @@
 
             <!-- System Health -->
             <div id="system-health" class="page">
+                <button class="info-btn" data-md="InfoBox\URL_scanner.md" title="More info">ℹ️</button>
                 <h2>System Information</h2>
-                <p><strong>CPU:</strong> <span id="cpuInfo"></span></p>
-                <p><strong>RAM:</strong> <span id="ramInfo"></span></p>
-                <p><strong>OS:</strong> <span id="osInfo"></span></p>
-                <p><strong>Uptime:</strong> <span id="uptimeInfo"></span></p>
+
+                <!-- Row 1: CPU and RAM -->
+                <div class="info-row">
+                    <div class="info-item">
+                        <img src="icons/CPU.png" alt="CPU" class="info-icon" />
+                        <span id="cpuInfo"></span>
+                    </div>
+                    <div class="info-item">
+                        <img src="icons/ram.png" alt="RAM" class="info-icon" />
+                        <span id="ramInfo"></span>
+                    </div>
+                </div>
+
+                <!-- Row 2: OS and Uptime -->
+                <div class="info-row">
+                    <div class="info-item">
+                        <img src="icons/os.png" alt="OS" class="info-icon" />
+                        <span id="osInfo"></span>
+                    </div>
+                    <div class="info-item">
+                        <img src="icons/uptime.png" alt="Uptime" class="info-icon" />
+                        <span id="uptimeInfo"></span>
+                    </div>
+                </div>
+
                 <p id="healthWarning" style="color:gold;font-weight:bold"></p>
 
-                <h2>Disk Space</h2>
+                <h2>Disk Space:</h2>
                 <div id="diskInfo"></div>
 
+
+
                 <h2>Available Updates</h2>
-                <button id="upgradeAllBtn">Upgrade All</button>
                 <div id="updateList"></div>
                 <div id="updateResult"></div>
+                <button id="upgradeAllBtn" class="icon-button" title="Upgrade All">
+                    <img src="icons/upgrade_button.png" alt="Upgrade All" class="button-icon" />
+                </button>
             </div>
+
 
 
 

@@ -1025,8 +1025,8 @@ social-links img:hover {
 }
 
 .disk-bar {
-    width: 100%;
-    height: 8px;
+    width: 75%;
+    height: 13px;
     background: #333;
     border-radius: 4px;
     overflow: hidden;
@@ -1655,4 +1655,54 @@ body {
 
 .scan-table td a:hover {
     text-decoration: underline;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    /* even horizontal spacing */
+    align-items: center;
+    /* vertical centering */
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    /* optional: makes it responsive */
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 250px;
+    font-size: 1.2rem;
+    /* Increase text size */
+    font-weight: 700;
+    /* Slightly bolder text */
+    line-height: 1.8;
+    color: #c5e2df;
+}
+
+
+.info-icon {
+    width: 250px;
+    height: 250px;
+    margin-right: 10px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 10px 0;
+    transition: transform 0.2s ease;
+}
+
+.icon-button:hover {
+    transform: scale(1.01);
+}
+
+.button-icon {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
 }
