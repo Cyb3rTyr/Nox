@@ -1,23 +1,26 @@
 {
-    "name": "nox-electron-demo",
+    "name": "nox",
     "version": "1.0.0",
-    "description": "Minimal Nox Electron GUI",
+    "description": "Nox — Malware Defense, System Cleanup & Health Dashboard",
     "main": "main.js",
+    "author": "Your Name <you@example.com>",
+    "license": "MIT",
     "scripts": {
         "start": "electron .",
         "dist": "electron-builder"
     },
-    "author": "",
-    "license": "MIT",
     "dependencies": {
-        "node-disk-info": "^1.3.0",
-        "systeminformation": "^5.27.1"
+        "electron-log": "^4.4.7",
+        "systeminformation": "^5.12.4"
     },
     "devDependencies": {
         "electron": "^26.0.0",
         "electron-builder": "^24.0.0"
     },
     "build": {
+        "asarUnpack": [
+            "scripts/**/*"
+        ],
         "appId": "com.nox.app",
         "productName": "Nox",
         "files": [
@@ -26,13 +29,12 @@
             "preload.js",
             "renderer.js",
             "style.css",
-            "package.json",
+            "LICENSE",
+            "README.md",
             "pages/**/*",
             "scripts/**/*",
-            "icons/**/*",
             "InfoBox/**/*",
-            "README.md",
-            "LICENSE"
+            "icons/**/*"
         ],
         "directories": {
             "buildResources": "icons"
@@ -50,7 +52,8 @@
         },
         "nsis": {
             "oneClick": false,
-            "allowToChangeInstallationDirectory": true
+            "allowToChangeInstallationDirectory": true,
+            "artifactName": "Nox-Setup-${version}.${ext}"
         }
     }
 }

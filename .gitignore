@@ -1,3 +1,37 @@
-/venv
+# Node dependencies
 /node_modules
-/reports
+
+# Python virtual env (if you ever spin one up)
+/venv
+
+# Build outputs & installers
+/dist/
+/win-unpacked/
+
+# Electron unpacked ASAR (if you ever check that in)
+/app.asar
+/app.asar.unpacked/
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+*.log
+
+# IDE/editor folders
+.vscode/
+/.idea/
+/*.suo
+/*.ntvs*
+/*.njsproj
+/*.sln
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Coverage & reports
+/reports/
+/coverage/
+
+# Environment variables
+.env
