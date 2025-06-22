@@ -187,52 +187,71 @@ ipcMain.handle('scan-url', async (_event, url) => {
 });
 
 // handle “what updates are available?”
-ipcMain.handle('get-updates', async () => {
-    // TODO: replace this with your real update-check logic
-    // return an array of { name, version } for each available update
-    return [
-        // example:
-        // { name: 'Nox Core', version: '1.2.3' },
-        // { name: 'Security Definitions', version: '2025.06.14' }
-    ];
+ipcMain.handle('check-updates', async () => {
+    const { spawn } = require('child_process');
+
+    return new Promise((resolve, reject) => {
+        const child = spawn('winget', ['update'], {
+            shell: true,
+            windowsHide: true
+        });
+
+        let output = '';
+        child.stdout.on('data', data => output += data.toString());
+        child.stderr.on('data', data => output += data.toString());
+
+        child.on('close', code => {
+            if (code === 0) resolve(output.trim());
+            else reject(new Error(output.trim()));
+        });
+    });
 });
 
+
 // handle “upgrade everything”
+// ── UPGRADE ALL (winget logic) ──────────────────────────────────
 ipcMain.handle('upgrade-all', async () => {
-    try {
-        // First, ensure Defender definitions are updated (example using PowerShell)
-        const defenderUpdate = await new Promise((resolve, reject) => {
-            const { spawn } = require('child_process');
-            const child = spawn('powershell.exe', [
-                '-NoProfile', '-ExecutionPolicy', 'Bypass',
-                '-Command', 'Update-MpSignature'
-            ]);
+    const { spawn } = require('child_process');
+
+    const runCommand = (command, args) => {
+        return new Promise((resolve, reject) => {
+            const child = spawn(command, args, {
+                shell: true,
+                windowsHide: true
+            });
 
             let output = '';
             child.stdout.on('data', data => output += data.toString());
             child.stderr.on('data', data => output += data.toString());
 
             child.on('close', code => {
-                if (code === 0) resolve(output);
-                else reject(new Error(`Defender update failed: ${output}`));
+                if (code === 0) resolve(output.trim());
+                else reject(new Error(output.trim()));
             });
 
             child.on('error', err => reject(err));
         });
+    };
 
-        console.log('Defender definitions updated:', defenderUpdate.trim());
+    try {
+        const updateOut = await runCommand('winget', ['update']);
+        console.log('🟡 Winget UPDATE output:\n', updateOut);
 
-        // Now run your actual update logic here:
-        // Example placeholder:
-        const updatesInstalled = true; // replace with actual update logic.
+        await new Promise(resolve => setTimeout(resolve, 15000));
 
-        if (updatesInstalled) {
-            return { success: true, message: 'All updates installed successfully, including Defender definitions.' };
-        } else {
-            throw new Error('Some updates failed to install.');
-        }
+        const upgradeOut = await runCommand('winget', ['upgrade', '--all', '-u']);
+        console.log('🟢 Winget UPGRADE output:\n', upgradeOut);
 
-    } catch (e) {
-        return { success: false, message: `Upgrade failed: ${e.message}` };
+        return {
+            success: true,
+            message: `📦 Winget Update Output:\n\n${updateOut}\n\n⬆ Winget Upgrade Output:\n\n${upgradeOut}`
+        };
+
+    } catch (err) {
+        console.error('❌ upgrade-all error:', err.message);
+        return {
+            success: false,
+            message: `❌ Error:\n\n${err.message}`
+        };
     }
 });

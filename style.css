@@ -1706,3 +1706,28 @@ body {
     height: 150px;
     object-fit: contain;
 }
+
+/* Upgrade Button Styling */
+.upgrade-button {
+    background-color: #BC13FE;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin-top: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-family: 'Rubik', sans-serif;
+}
+
+.upgrade-button:hover {
+    background-color: #a60dfc;
+    transform: translateY(-1px);
+}
+
+.upgrade-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

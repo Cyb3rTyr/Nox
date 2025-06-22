@@ -35,7 +35,7 @@ contextBridge.exposeInMainWorld('sysInfo', {
 
 // new: update API
 contextBridge.exposeInMainWorld('updateAPI', {
-    getUpdates: () => ipcRenderer.invoke('get-updates'),
+    checkUpdates: () => ipcRenderer.invoke('check-updates'),
     upgradeAll: () => ipcRenderer.invoke('upgrade-all')
 });
 

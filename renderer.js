@@ -329,6 +329,9 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
             console.log('[nav] loading systemCleanup.js');
             const mod = await import('./pages/systemCleanup.js');
             mod.init();
+        } else if (page === 'system-health') {
+            console.log('[nav] loading systemHealth.js');
+            checkAvailableUpdates(); // ✅ ADD THIS
         }
         // … further pages …
     });
@@ -482,4 +485,57 @@ document.addEventListener('DOMContentLoaded', () => {
     input.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !button.disabled) doScan();
     });
+});
+
+function checkAvailableUpdates() {
+    const listDiv = document.getElementById('updateList');
+    const resultDiv = document.getElementById('updateResult');
+
+    if (!listDiv || !window.updateAPI?.checkUpdates) return;
+
+    listDiv.innerHTML = '🔍 Checking for available updates...';
+
+    window.updateAPI.checkUpdates()
+        .then(output => {
+            // Raw CLI output
+            resultDiv.innerHTML = ``;
+
+            // Attempt to parse update lines
+            const lines = output.split('\n');
+            const updates = lines
+                .filter(line => /^\s*\S+\s+\S+\s+\S+/.test(line)) // simple package line pattern
+                .map(line => `<li>${line}</li>`)
+                .join('');
+
+            listDiv.innerHTML = updates
+                ? `<ul style="margin-top: 10px">${updates}</ul>`
+                : '✅ No updates available.';
+        })
+        .catch(err => {
+            listDiv.innerHTML = `<span style="color:tomato">❌ Error: ${err.message}</span>`;
+        });
+}
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const upgradeBtn = document.getElementById('upgradeAllBtnSystem');
+    const resultDiv = document.getElementById('updateResult');
+
+    if (upgradeBtn && window.updateAPI) {
+        upgradeBtn.addEventListener('click', async () => {
+            upgradeBtn.disabled = true;
+            resultDiv.innerHTML = '🔄 Running winget update...';
+
+            try {
+                const response = await window.updateAPI.upgradeAll();
+
+                resultDiv.innerHTML = response.message.replace(/\n/g, '<br>');
+            } catch (err) {
+                resultDiv.innerHTML = `<span style="color:tomato">Unexpected error: ${err.message}</span>`;
+            } finally {
+                upgradeBtn.disabled = false;
+            }
+        });
+    }
 });
