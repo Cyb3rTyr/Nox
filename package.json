@@ -5,16 +5,52 @@
     "main": "main.js",
     "scripts": {
         "start": "electron .",
-        "dist": "electron-builder --windows"
+        "dist": "electron-builder"
     },
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "electron": "^26.0.0",
         "node-disk-info": "^1.3.0",
         "systeminformation": "^5.27.1"
     },
     "devDependencies": {
+        "electron": "^26.0.0",
         "electron-builder": "^24.0.0"
+    },
+    "build": {
+        "appId": "com.nox.app",
+        "productName": "Nox",
+        "files": [
+            "index.html",
+            "main.js",
+            "preload.js",
+            "renderer.js",
+            "style.css",
+            "package.json",
+            "pages/**/*",
+            "scripts/**/*",
+            "icons/**/*",
+            "InfoBox/**/*",
+            "README.md",
+            "LICENSE"
+        ],
+        "directories": {
+            "buildResources": "icons"
+        },
+        "win": {
+            "icon": "icons/nox-icon.ico",
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ]
+        },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
+        }
     }
 }
